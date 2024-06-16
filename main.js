@@ -263,6 +263,25 @@ const backToMenu = event => {
     document.getElementById('menu').showModal();
 }
 
+const sendResponse = category => {
+    let settings = Alpine.store('settings');
+    let state = Alpine.store('state');
+
+    if (state.currentRun.length !== 0) {
+        if (category === 'position') {
+            state.currentRun.at(-1).response.position = true;
+        } else if (category === 'audio') {
+            state.currentRun.at(-1).response.audio = true;
+        } else if (category === 'color') {
+            state.currentRun.at(-1).response.color = true;
+        } else if (category === 'shape') {
+            state.currentRun.at(-1).response.shape = true;
+        } else {
+            console.error("Unknown category", category);
+        }
+    }
+};
+
 document.addEventListener('alpine:init', () => {
     Alpine.store('settings', readSettings());
     Alpine.store('runHistory', readRunHistory());
@@ -281,13 +300,13 @@ document.addEventListener('alpine:init', () => {
         let state = Alpine.store('state');
         if (state.currentRun.length !== 0) {
             if (event.key === settings.position.key) {
-                state.currentRun.at(-1).response.position = true;
+                sendResponse('position');
             } else if (event.key === settings.audio.key) {
-                state.currentRun.at(-1).response.audio = true;
+                sendResponse('audio');
             } else if (event.key === settings.color.key) {
-                state.currentRun.at(-1).response.color = true;
+                sendResponse('color');
             } else if (event.key === settings.shape.key) {
-                state.currentRun.at(-1).response.shape = true;
+                sendResponse('shape');
             }
         }
     };

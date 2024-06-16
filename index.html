@@ -210,10 +210,22 @@
             <div></div>
         </div>
         <div id="responses">
-            <div class="position" x-show="$store.settings.position.enabled">Sijainti <span x-text="$store.settings.position.key"></span></div>
-            <div class="audio" x-show="$store.settings.audio.enabled">Ääni <span x-text="$store.settings.audio.key"></span></div>
-            <div class="color" x-show="$store.settings.color.enabled">Väri <span x-text="$store.settings.color.key"></span></div>
-            <div class="shape" x-show="$store.settings.shape.enabled">Muoto <span x-text="$store.settings.shape.key"></span></div>
+            <div class="position" x-show="$store.settings.position.enabled"
+                @click="sendResponse('position')">
+                Sijainti <span x-text="$store.settings.position.key"></span>
+            </div>
+            <div class="audio" x-show="$store.settings.audio.enabled"
+                @click="sendResponse('audio')">
+                Ääni <span x-text="$store.settings.audio.key"></span>
+            </div>
+            <div class="color" x-show="$store.settings.color.enabled"
+                @click="sendResponse('color')">
+                Väri <span x-text="$store.settings.color.key"></span>
+            </div>
+            <div class="shape" x-show="$store.settings.shape.enabled"
+                @click="sendResponse('shape')">
+                Muoto <span x-text="$store.settings.shape.key"></span>
+            </div>
         </div>
     </div>
 </body>
