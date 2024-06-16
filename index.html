@@ -50,14 +50,14 @@
                 <input type="text" :value="$store.settings.position.key" @keydown.prevent="$store.settings.position.key=event.key" class="key"></span>
             </div>
             <div>
-                <label><input type="checkbox" x-model="$store.settings.sound.enabled">Ääni
-                <select x-model="$store.settings.sound.set">
+                <label><input type="checkbox" x-model="$store.settings.audio.enabled">Ääni
+                <select x-model="$store.settings.audio.set">
                     <template x-for="audio in audios">
-                        <option :value="audio" x-text="audio"></option>
+                        <option :value="audio" x-text="audio" :selected="audio == $store.settings.audio.set"></option>
                     </template>
                 </select>
                 </label>
-                <input type="text" :value="$store.settings.sound.key" @keydown.prevent="$store.settings.sound.key=event.key" class="key"></span>
+                <input type="text" :value="$store.settings.audio.key" @keydown.prevent="$store.settings.audio.key=event.key" class="key"></span>
             </div>
             <div>
                 <label><input type="checkbox" x-model="$store.settings.color.enabled">Väri</label>
@@ -85,7 +85,7 @@
         </div>
         <div id="indicators">
             <div x-show="$store.settings.position.enabled">Sijainti <span x-text="$store.settings.position.key"></span></div>
-            <div x-show="$store.settings.sound.enabled">Ääni <span x-text="$store.settings.sound.key"></span></div>
+            <div x-show="$store.settings.audio.enabled">Ääni <span x-text="$store.settings.audio.key"></span></div>
             <div x-show="$store.settings.color.enabled">Väri <span x-text="$store.settings.color.key"></span></div>
             <div x-show="$store.settings.shape.enabled">Muoto <span x-text="$store.settings.shape.key"></span></div>
         </div>

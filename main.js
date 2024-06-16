@@ -6,7 +6,7 @@ const defaultSettings = {
         enabled: true,
         key: 'a',
     },
-    sound: {
+    audio: {
         enabled: true,
         key: 'l',
         set: 'fi_automatic'
@@ -83,8 +83,8 @@ const stepGame = () => {
     if (settings.position.enabled) {
         entry.position = Math.floor(Math.random() * 9);
     }
-    if (settings.sound.enabled) {
-        entry.sound = Math.floor(Math.random() * 9);
+    if (settings.audio.enabled) {
+        entry.audio = Math.floor(Math.random() * 9);
     }
     if (settings.color.enabled) {
         entry.color = Math.floor(Math.random() * 9);
@@ -103,8 +103,8 @@ const stepGame = () => {
     ac.classList.add('active');
     ac.style.setProperty('--color', settings.color.enabled ? colors[entry.color] : "#f00");
 
-    if (settings.sound.enabled) {
-        audioCtx.src = 'audio/' + settings.sound.set + '/' + (entry.sound + 1) + '.mp3';
+    if (settings.audio.enabled) {
+        audioCtx.src = 'audio/' + settings.audio.set + '/' + (entry.audio + 1) + '.mp3';
         audioCtx.play();
     }
 };
