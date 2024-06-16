@@ -40,20 +40,20 @@
                 <input type="button" class="danger" value="Nollaa" @click="writeSettings(defaultSettings); $store.settings = readSettings()">
             </div>
             <div>
-                <label><input type="number" x-model="$store.settings.n" value=2 min=1 step=1>kohtaa taaksepäin</label>
+                <label><input type="number" x-model.number="$store.settings.n" value=2 min=1 step=1>kohtaa taaksepäin</label>
             </div>
             <div>
-                <label><input type="number" x-model="$store.settings.runLength" value=100 :min="parseInt($store.settings.n) + 1" step=1>kpl sessiot</label>
+                <label><input type="number" x-model.number="$store.settings.runLength" value=100 :min="parseInt($store.settings.n) + 1" step=1>kpl sessio</label>
             </div>
             <div>
-                <label><input type="number" x-model="$store.settings.secondsPerTrial" value=3 min=0.5 step=0.1>sekunnin välein</label>
+                <label><input type="number" x-model.number="$store.settings.secondsPerTrial" value=3 min=0.5 step=0.1>sekunnin välein</label>
             </div>
             <div>
-                <label><input type="checkbox" x-model="$store.settings.position.enabled">Sijainti</label>
+                <label><input type="checkbox" x-model.boolean="$store.settings.position.enabled">Sijainti</label>
                 <input type="text" :value="$store.settings.position.key" @keydown.prevent="$store.settings.position.key=event.key" class="key"></span>
             </div>
             <div>
-                <label><input type="checkbox" x-model="$store.settings.audio.enabled">Ääni
+                <label><input type="checkbox" x-model.boolean="$store.settings.audio.enabled">Ääni
                 <select x-model="$store.settings.audio.set">
                     <template x-for="audio in audios">
                         <option :value="audio" x-text="audio" :selected="audio == $store.settings.audio.set"></option>
@@ -63,32 +63,47 @@
                 <input type="text" :value="$store.settings.audio.key" @keydown.prevent="$store.settings.audio.key=event.key" class="key"></span>
             </div>
             <div>
-                <label><input type="checkbox" x-model="$store.settings.color.enabled">Väri</label>
+                <label><input type="checkbox" x-model.boolean="$store.settings.color.enabled">Väri</label>
                 <input type="text" :value="$store.settings.color.key" @keydown.prevent="$store.settings.color.key=event.key" class="key"></span>
             </div>
             <div>
-                <span><s>Muoto</s> Työn alla</span>
-                <!-- <label><input type="checkbox" x-model="$store.settings.shape.enabled">Muoto</label> -->
+                <label><input type="checkbox" disabled x-model.boolean="$store.settings.shape.enabled"><s>Muoto</s> Työn alla</label>
+                <!-- <label><input type="checkbox" x-model.boolean="$store.settings.shape.enabled">Muoto</label> -->
                 <input type="text" :value="$store.settings.shape.key" @keydown.prevent="$store.settings.shape.key=event.key" class="key"></span>
             </div>
         </div>
     </dialog>
 
-    <dialog id="runstats">
-        <h2>Valmis! Tulokset</h2>
-        <code x-text="JSON.stringify($store.state.currentRun)"></code>
-        <code x-text="JSON.stringify($store.settings)"></code>
-        <table>
-            <thead>
-                <th>Kierros</th>
-                <th x-show="$store.settings.position.enabled">Sijainti</th>
-                <th x-show="$store.settings.audio.enabled">Ääni</th>
-                <th x-show="$store.settings.color.enabled">Väri</th>
-                <th x-show="$store.settings.shape.enabled">Muoto</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </dialog>
+    <template x-if="$store.state.selectedRun !== null && $store.state.selectedRun < $store.runHistory.length">
+        <dialog id="runstats">
+            <h2>Tulokset suoritukselle #<span x-text="$store.state.selectedRun + 1"></span></h2>
+            <div>
+                <label><input type=number inert :value="$store.runHistory[$store.state.selectedRun].settings.n">kohtaa
+                    taaksepäin</label>
+                <label><input type=number inert
+                        :value="$store.runHistory[$store.state.selectedRun].settings.runLength">kpl sessio</label>
+                <label><input type=number inert
+                        :value="$store.runHistory[$store.state.selectedRun].settings.secondsPerTrial">sekunnin
+                    välein</label>
+            </div>
+            <div>
+                <label><input type="checkbox" inert :value="$store.settings.position.enabled">Sijainti</label>
+                <label><input type="checkbox" inert :value="$store.settings.audio.enabled">Ääni
+                    (<span x-text="$store.runHistory[$store.state.selectedRun].settings.audio.set"></span>)
+                </label>
+            </div>
+            <table>
+                <thead>
+                    <th>Kierros</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled">Sijainti</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled">Ääni</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled">Väri</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled">Muoto</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </dialog>
+    </template>
 
     <div id="game">
         <div id="gamegrid">

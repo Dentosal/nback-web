@@ -154,7 +154,7 @@ input:invalid, label:has(:invalid) {
     border: 1px solid black;
 }
 
-#runstats td[data-pressed=true]::after {
+#runstats td[data-pressed=true]::before {
     content: "⇥";
 }
 
