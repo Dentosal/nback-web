@@ -176,7 +176,7 @@ const checkCorrect = () => {
         correct.shape = false;
     }
 
-    if (state.currentRun.length <= settings.n + 1) {
+    if (state.currentRun.length <= settings.n) {
         for (k of Object.keys(correct)) {
             correct[k] = !(k in state.currentRun.at(-1).response);
         }
