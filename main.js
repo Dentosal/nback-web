@@ -199,96 +199,10 @@ const checkCorrect = () => {
 
 const endGame = () => {
     updateRunHistory();
-    setTimeout(showRunStats, 100); // Update dom first
+    setTimeout(() => {
+        document.getElementById('runstats').showModal();
+    }, 0); // Allow the browser to update the DOM before
 }
-
-const showRunStats = () => {
-    let state = Alpine.store('state');
-    let settings = Alpine.store('settings');
-
-    console.log("Game over", state.selectedRun, Alpine.store('runHistory').length);
-
-    let tbody = document.querySelector('#runstats > table > tbody');
-    tbody.innerHTML = '';
-
-    for (let row = 0; row < settings.runLength; row++) {
-        let entry = state.currentRun[row];
-
-        let tr = document.createElement('tr');
-        let rowid = document.createElement('td');
-        rowid.textContent = row + 1;
-        tr.appendChild(rowid);
-
-
-        if (settings.position.enabled) {
-            let correct = entry.correct.position;
-            let pressed = 'position' in entry.response;
-            let td = document.createElement('td');
-            td.textContent = entry.position + 1;
-            td.setAttribute('data-correct', correct);
-            td.setAttribute('data-pressed', pressed);
-            tr.appendChild(td);
-        }
-        if (settings.audio.enabled) {
-            let correct = entry.correct.audio;
-            let pressed = 'audio' in entry.response;
-            let td = document.createElement('td');
-            td.textContent = entry.audio + 1;
-            td.setAttribute('data-correct', correct);
-            td.setAttribute('data-pressed', pressed);
-            tr.appendChild(td);
-        }
-        if (settings.color.enabled) {
-            let correct = entry.correct.color;
-            let pressed = 'color' in entry.response;
-            let td = document.createElement('td');
-            td.textContent = colors[entry.color];
-            td.setAttribute('data-color', colors[entry.color]);
-            td.setAttribute('data-correct', correct);
-            td.setAttribute('data-pressed', pressed);
-            tr.appendChild(td);
-        }
-        if (settings.shape.enabled) {
-            let correct = entry.correct.shape;
-            let pressed = 'shape' in entry.response;
-            let td = document.createElement('td');
-            td.textContent = entry.shape;
-            td.setAttribute('data-correct', correct);
-            td.setAttribute('data-pressed', pressed);
-            tr.appendChild(td);
-        }
-
-        tbody.appendChild(tr);
-    }
-
-    let tr = document.createElement('tr');
-    let rowid = document.createElement('td');
-    rowid.textContent = "Yhteensä";
-    tr.appendChild(rowid);
-    if (settings.position.enabled) {
-        let td = document.createElement('td');
-        td.textContent = state.currentRun.reduce((acc, x) => acc + x.correct.position, 0) + "/" + settings.runLength;
-        tr.appendChild(td);
-    }
-    if (settings.audio.enabled) {
-        let td = document.createElement('td');
-        td.textContent = state.currentRun.reduce((acc, x) => acc + x.correct.audio, 0) + "/" + settings.runLength;
-        tr.appendChild(td);
-    }
-    if (settings.color.enabled) {
-        let td = document.createElement('td');
-        td.textContent = state.currentRun.reduce((acc, x) => acc + x.correct.color, 0) + "/" + settings.runLength;
-        tr.appendChild(td);
-    }
-    if (settings.shape.enabled) {
-        let td = document.createElement('td');
-        td.textContent = state.currentRun.reduce((acc, x) => acc + x.correct.shape, 0) + "/" + settings.runLength;
-        tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
-
-    document.getElementById('runstats').showModal();
-};
 
 const readRunHistory = () => {
     try {
@@ -304,12 +218,50 @@ const updateRunHistory = () => {
     localStorage.getItem('history');
     let history = readRunHistory();
     let newHistory = history.concat([{
+        endMoment: (new Date()).toISOString(),
         settings,
         run: currentRun,
     }]);
     localStorage.setItem('history', JSON.stringify(newHistory));
     Alpine.store('runHistory', newHistory);
 };
+
+const runScore = run => {
+    let cats = run.settings.position.enabled + run.settings.audio.enabled + run.settings.color.enabled + run.settings.shape.enabled;
+    if (cats === 0) {
+        return 1;
+    }
+    let divider = cats * run.run.length;
+    return run.run.reduce((acc, x) => {
+        let correct = 0;
+        if (run.settings.position.enabled) {
+            correct += x.correct.position;
+        }
+        if (run.settings.audio.enabled) {
+            correct += x.correct.audio;
+        }
+        if (run.settings.color.enabled) {
+            correct += x.correct.color;
+        }
+        if (run.settings.shape.enabled) {
+            correct += x.correct.shape;
+        }
+        return acc + correct;
+    }, 0) / divider;
+};
+
+const closeThisModal = event => {
+    let t = event.target;
+    while (t.tagName !== 'DIALOG') {
+        t = t.parentElement;
+    }
+    t.close();
+};
+
+const backToMenu = event => {
+    closeThisModal(event);
+    document.getElementById('menu').showModal();
+}
 
 document.addEventListener('alpine:init', () => {
     Alpine.store('settings', readSettings());

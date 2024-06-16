@@ -20,15 +20,16 @@
                 <p>
                     Tämä versio tallentaa kaiken paikallisesti selaimeesi,
                     ja näin ollen kunnioittaa yksityisyyttäsi.
-                    Voit halutessasi jakaa tuloksesi alla olevista napeista.
+                    <s>Voit halutessasi jakaa tuloksesi alla olevista napeista.</s> (työn alla)
                 </p>
                 <p>
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                 </p>
             </div>
             <div class="mid">
-                <input type="button" value="Tilastot">
-                <input type="button" value="Jaa parhaat tulokset">
+                <input type="button" value="Historia" @click="document.querySelector('#history').showModal()">
+                <!-- <input type="button" value="Tilastot"> -->
+                <!-- <input type="button" value="Jaa parhaat tulokset"> -->
             </div>
             <div class="mid large">
                 <input type="button" value="Aloita" autofocus ="!$store.state.hasValidSettings" @click="startGame()">
@@ -67,7 +68,7 @@
                 <input type="text" :value="$store.settings.color.key" @keydown.prevent="$store.settings.color.key=event.key" class="key"></span>
             </div>
             <div>
-                <label><input type="checkbox" disabled x-model.boolean="$store.settings.shape.enabled"><s>Muoto</s> Työn alla</label>
+                <label><input type="checkbox" disabled x-model.boolean="$store.settings.shape.enabled"><s>Muoto</s> (työn alla)</label>
                 <!-- <label><input type="checkbox" x-model.boolean="$store.settings.shape.enabled">Muoto</label> -->
                 <input type="text" :value="$store.settings.shape.key" @keydown.prevent="$store.settings.shape.key=event.key" class="key"></span>
             </div>
@@ -76,21 +77,23 @@
 
     <template x-if="$store.state.selectedRun !== null && $store.state.selectedRun < $store.runHistory.length">
         <dialog id="runstats">
-            <h2>Tulokset suoritukselle #<span x-text="$store.state.selectedRun + 1"></span></h2>
             <div>
-                <label><input type=number inert :value="$store.runHistory[$store.state.selectedRun].settings.n">kohtaa
-                    taaksepäin</label>
-                <label><input type=number inert
-                        :value="$store.runHistory[$store.state.selectedRun].settings.runLength">kpl sessio</label>
-                <label><input type=number inert
-                        :value="$store.runHistory[$store.state.selectedRun].settings.secondsPerTrial">sekunnin
-                    välein</label>
+                <h2>Tulokset suoritukselle #<span x-text="$store.state.selectedRun + 1"></span></h2>
+                <input type="button" value="Takaisin" @click="backToMenu">
             </div>
             <div>
-                <label><input type="checkbox" inert :value="$store.settings.position.enabled">Sijainti</label>
-                <label><input type="checkbox" inert :value="$store.settings.audio.enabled">Ääni
+                <span x-text="$store.runHistory[$store.state.selectedRun].settings.n"></span> kohtaa taaksepäin
+                <span x-text="$store.runHistory[$store.state.selectedRun].settings.runLength"></span> kpl sessio
+                <span x-text="$store.runHistory[$store.state.selectedRun].settings.secondsPerTrial"></span> sekunnin välein
+            </div>
+            <div>
+                <input type="checkbox" inert :value="$store.settings.position.enabled">Sijainti
+                <input type="checkbox" inert :value="$store.settings.audio.enabled">Ääni
                     (<span x-text="$store.runHistory[$store.state.selectedRun].settings.audio.set"></span>)
-                </label>
+                
+            </div>
+            <div>
+                <p>Pisteet: <span x-text="Math.round(runScore($store.runHistory[$store.state.selectedRun])*100) + '%'"></span></p>
             </div>
             <table>
                 <thead>
@@ -100,10 +103,99 @@
                     <th x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled">Väri</th>
                     <th x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled">Muoto</th>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    <template x-for="(entry, i) in $store.runHistory[$store.state.selectedRun].run">
+                        <tr>
+                            <td x-text="i + 1"></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled"
+                                :data-correct="entry.correct.position"
+                                :data-incorrect="!entry.correct.position"
+                                :data-pressed="'position' in entry.response"
+                                x-text="entry.position + 1"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
+                                :data-correct="entry.correct.audio"
+                                :data-incorrect="!entry.correct.audio"
+                                :data-pressed="'audio' in entry.response"
+                                x-text="entry.audio + 1"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
+                                :data-correct="entry.correct.color"
+                                :data-incorrect="!entry.correct.color"
+                                :data-pressed="'color' in entry.response"
+                                x-text="colors[entry.color]"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
+                                :data-correct="entry.correct.shape"
+                                :data-incorrect="!entry.correct.shape"
+                                :data-pressed="'shape' in entry.response"
+                                x-text="entry.shape"
+                            ></td>
+                        </tr>
+                    </template>
+                    <tr>
+                        <td>Yhteensä</td>
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled"
+                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.position).length"
+                        ></td>
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
+                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.audio).length"
+                        ></td>
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
+                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.color).length"
+                        ></td>
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
+                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.shape).length"
+                        ></td>
+                    </tr>
+                </tbody>
             </table>
         </dialog>
     </template>
+
+    <dialog id="history">
+        <div>
+            <h2>Historia</h2>
+            <input type="button" value="Takaisin" @click="backToMenu">
+        </div>
+        <table>
+            <thead>
+                <th>Numero</th>
+                <th>Ajankohta (päättyi)</th>
+                <th>Asetukset</th>
+                <th>Tulos</th>
+                <th>Tarkastele</th>
+            </thead>
+            <tbody>
+                <template x-for="(run, i) in $store.runHistory" :key="i">
+                    <tr>
+                        <td x-text="i"></td>
+                        <td x-text="run.endMoment"></td>
+                        <td>
+                            n=<span x-text="run.settings.n"></span>
+                            <span x-text="run.settings.runLength"></span>kpl@<span x-text="run.settings.secondsPerTrial"></span>s
+                            (
+                                <span x-show="run.settings.position.enabled">S</span>
+                                <span x-show="run.settings.audio.enabled">Ä</span>
+                                <span x-show="run.settings.color.enabled">V</span>
+                                <span x-show="run.settings.shape.enabled">M</span>
+                            )
+                        </td>
+                        <td x-text="Math.round(runScore(run)*100) + '%'"></td>
+                        <td>
+                            <input type="button" value="Avaa"
+                                @click="$store.state.selectedRun = i; closeThisModal($event); setTimeout(() => document.querySelector('#runstats').showModal(), 0)"
+                            >
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </dialog>
 
     <div id="game">
         <div id="gamegrid">

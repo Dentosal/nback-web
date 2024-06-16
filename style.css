@@ -143,27 +143,36 @@ input:invalid, label:has(:invalid) {
     max-width: 800px;
 }
 
-#runstats table {
-    width: 100%;
-    text-align: center;
-    border-collapse: collapse;
-    border-style: hidden;
+#runstats, #history {
+    table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+        border-style: hidden;
+    }
+    th, td {
+        border: 1px solid black;
+    }
 }
 
-#runstats td {
-    border: 1px solid black;
-}
 
-#runstats td[data-pressed=true]::before {
+#runstats td[data-pressed]::before {
     content: "⇥";
 }
 
-#runstats td[data-correct=true]::after {
+#runstats td[data-correct]::after {
     content: "✔";
     color: green;
 }
 
-#runstats td[data-correct=false]::after {
+#runstats td[data-incorrect]::after {
     content: "✘";
     color: red;
+}
+
+#history, #runstats {
+    & > div:first-child {
+        display: flex;
+        justify-content: space-between;
+    }
 }
