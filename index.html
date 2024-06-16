@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moni n-taa</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body x-data>
+    <dialog id="menu">
+        <div id="menucontent">
+            <div>
+                <h2>Moni <i>n</i>-taa</h2>
+                <p>Työmuistia kehittävä harjoitus <a href="https://gwern.net/dnb-faq"><i>Gwern</i>in artikkelin suosituksilla.</a></p>
+    
+                <p>
+                    Tämä versio tallentaa kaiken paikallisesti selaimeesi,
+                    ja näin ollen kunnioittaa yksityisyyttäsi.
+                    Voit halutessasi jakaa tuloksesi alla olevista napeista.
+                </p>    
+            </div>
+            <div class="mid">
+                <input type="button" value="Tilastot">
+                <input type="button" value="Jaa parhaat tulokset">
+            </div>
+            <div class="mid large">
+                <input type="button" value="Aloita" :disabled="!$store.state.hasValidSettings" @click="startGame()">
+            </div>
+        </div>
+        <form id="settings" action="javascript:void(0);" @change="updateSettings()" @keydown="updateSettings()">
+            <div>
+                <h2>Asetukset</h2>
+                <input type="button" class="danger" value="Nollaa" @click="writeSettings(defaultSettings); $store.settings = readSettings()">
+            </div>
+            <div>
+                <label><input type="number" x-model="$store.settings.n" value=2 min=1 step=1>kohtaa taaksepäin</label>
+            </div>
+            <div>
+                <label><input type="number" x-model="$store.settings.runLength" value=100 :min="parseInt($store.settings.n) + 1" step=1>kpl sessiot</label>
+            </div>
+            <div>
+                <label><input type="number" x-model="$store.settings.secondsPerTrial" value=3 min=0.5 step=0.1>sekunnin välein</label>
+            </div>
+            <div>
+                <label><input type="checkbox" x-model="$store.settings.position.enabled">Sijainti</label>
+                <input type="text" :value="$store.settings.position.key" @keydown.prevent="$store.settings.position.key=event.key" class="key"></span>
+            </div>
+            <div>
+                <label><input type="checkbox" x-model="$store.settings.sound.enabled">Ääni
+                <select x-model="$store.settings.sound.set">
+                    <template x-for="audio in audios">
+                        <option :value="audio" x-text="audio"></option>
+                    </template>
+                </select>
+                </label>
+                <input type="text" :value="$store.settings.sound.key" @keydown.prevent="$store.settings.sound.key=event.key" class="key"></span>
+            </div>
+            <div>
+                <label><input type="checkbox" x-model="$store.settings.color.enabled">Väri</label>
+                <input type="text" :value="$store.settings.color.key" @keydown.prevent="$store.settings.color.key=event.key" class="key"></span>
+            </div>
+            <div>
+                <span><s>Muoto</s> Työn alla</span>
+                <!-- <label><input type="checkbox" x-model="$store.settings.shape.enabled">Muoto</label> -->
+                <input type="text" :value="$store.settings.shape.key" @keydown.prevent="$store.settings.shape.key=event.key" class="key"></span>
+            </div>
+        </div>
+    </dialog>
+
+    <div id="game">
+        <div id="gamegrid">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div id="indicators">
+            <div x-show="$store.settings.position.enabled">Sijainti <span x-text="$store.settings.position.key"></span></div>
+            <div x-show="$store.settings.sound.enabled">Ääni <span x-text="$store.settings.sound.key"></span></div>
+            <div x-show="$store.settings.color.enabled">Väri <span x-text="$store.settings.color.key"></span></div>
+            <div x-show="$store.settings.shape.enabled">Muoto <span x-text="$store.settings.shape.key"></span></div>
+        </div>
+    </div>
+</body>
+</html>

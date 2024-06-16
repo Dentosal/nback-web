@@ -1,0 +1,129 @@
+body {
+    font-size: 1.1em;
+}
+
+input[type=button] {
+    padding: 0.5rem;
+}
+
+.danger {
+    background-color: #c00;
+    color: white;
+    font-weight: bold;
+}
+
+#menu[open] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: rgb(152, 205, 223);
+    border: 2px solid black;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+#menu::backdrop {
+    backdrop-filter: blur(5px);
+    background-color: rgba(0.8, 0.8, 0.8, 0.8);
+}
+
+#menu {
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+    }
+    &>form, &>div {
+        margin: 0 auto;
+    }
+}
+
+#menucontent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    justify-content: space-between;
+    max-width: 500px;
+}
+
+.mid {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.2rem;
+}
+
+.large input {
+    font-size: 1.2em;
+}
+
+#settings {
+    padding: 1rem;
+    background-color: lightblue;
+    border-radius: 0.5rem;
+}
+#settings>div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 300px;
+}
+
+input:invalid, label:has(:invalid) {
+    background: #f66;
+}
+
+.key {
+    margin: 1rem;
+    font-size: 1.5rem;
+    border: 1px solid black;
+    font-variant: small-caps;
+    font-family: monospace;
+    max-width: 5em;
+    text-align: center;
+    padding: 0.1em 0.5em;
+    box-shadow: 2px 2px 2px 2px black;
+}
+
+#gamegrid {
+    margin: 0.4rem auto;
+    display: grid;
+    grid-gap: 0.1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: calc(min(80vh, 80vw) - 2rem);
+}
+
+#gamegrid div {
+    background-color: #ccc;
+    min-width: 10px;
+    aspect-ratio: 1/1;
+}
+#gamegrid div.active {
+    background-color: var(--color);
+    min-width: 10px;
+    aspect-ratio: 1/1;
+}
+
+#indicators {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+#indicators div {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    background-color: lightblue;
+    border: 1px solid black;
+    height: 15vh;
+
+    display: grid;
+    align-items: center;
+}
+
+#indicators span {
+    font-variant: small-caps;
+    font-family: monospace;
+    font-size: 3rem;
+}
