@@ -90,7 +90,8 @@
                 <input type="checkbox" inert :value="$store.settings.position.enabled">Sijainti
                 <input type="checkbox" inert :value="$store.settings.audio.enabled">Ääni
                     (<span x-text="$store.runHistory[$store.state.selectedRun].settings.audio.set"></span>)
-                
+                <input type="checkbox" inert :value="$store.settings.color.enabled">Väri
+                <input type="checkbox" inert :value="$store.settings.shape.enabled">Muoto
             </div>
             <div>
                 <p>Pisteet: <span x-text="Math.round(runScore($store.runHistory[$store.state.selectedRun])*100) + '%'"></span></p>
