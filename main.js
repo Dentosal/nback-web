@@ -74,7 +74,7 @@ const startGame = () => {
     document.getElementById('menu').close();
     let state = Alpine.store('state');
     state.currentRun = [];
-    state.selectedRun = readRunHistory().length; // For stat display
+    state.selectedRun = readRunHistory().length; // For stat display and checking for ongoing game
     setTimeout(stepGame, 1000);
 };
 
@@ -144,7 +144,7 @@ const stepPrimary = () => {
     let active = settings.position.enabled ? entry.position + 1 : 5;
     let ac = document.querySelector('#gamegrid>div:nth-child(' + active + ')');
     ac.classList.add('active');
-    ac.style.setProperty('--color', settings.color.enabled ? colors[entry.color] : "#f00");
+    ac.style.setProperty('--color', settings.color.enabled ? colors[entry.color] : "#00f");
 
     if (settings.audio.enabled) {
         audioCtx.src = 'audio/' + settings.audio.set + '/' + (entry.audio + 1) + '.mp3';

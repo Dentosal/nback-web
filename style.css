@@ -2,10 +2,6 @@ body {
     font-size: 1.1em;
 }
 
-input[type=button] {
-    padding: 0.5rem;
-}
-
 .danger {
     background-color: #c00;
     color: white;
@@ -92,7 +88,7 @@ input:invalid, label:has(:invalid) {
     display: grid;
     grid-gap: 0.1rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    width: calc(min(80vh, 80vw) - 2rem);
+    width: calc(min(80vh, 80vw) - 4rem);
 }
 
 #gamegrid div {
@@ -104,6 +100,12 @@ input:invalid, label:has(:invalid) {
     background-color: var(--color);
     min-width: 10px;
     aspect-ratio: 1/1;
+}
+
+#topmenu {
+    height: 2rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 #responses {

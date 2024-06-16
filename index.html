@@ -11,7 +11,7 @@
 </head>
 
 <body x-data>
-    <dialog id="menu">
+    <dialog id="menu" @keydown="$event.preventDefault()">
         <div id="menucontent">
             <div>
                 <h2>Moni <i>n</i>-taa</h2>
@@ -38,7 +38,7 @@
         <form id="settings" action="javascript:void(0);" @change="updateSettings()" @keydown="updateSettings()">
             <div>
                 <h2>Asetukset</h2>
-                <input type="button" class="danger" value="Nollaa" @click="writeSettings(defaultSettings); $store.settings = readSettings()">
+                <input type="button" class="danger" value="Oletukset" @click="writeSettings(defaultSettings); $store.settings = readSettings()">
             </div>
             <div>
                 <label><input type="number" x-model.number="$store.settings.n" value=2 min=1 step=1>kohtaa taaksepäin</label>
@@ -190,7 +190,7 @@
                         <td x-text="Math.round(runScore(run)*100) + '%'"></td>
                         <td>
                             <input type="button" value="Avaa"
-                                @click="$store.state.selectedRun = i; closeThisModal($event); setTimeout(() => document.querySelector('#runstats').showModal(), 0)"
+                                @click="$store.state.selectedRun = i; setTimeout(() => document.querySelector('#runstats').showModal(), 0)"
                             >
                         </td>
                     </tr>
@@ -200,6 +200,12 @@
     </dialog>
 
     <div id="game">
+        <div id="topmenu">
+            <div>
+                <span x-text="$store.state.currentRun.length"></span>/<span x-text="$store.settings.runLength"></span>
+            </div>
+            <input type="button" value="Keskeytä" @click="window.location.reload()">
+        </div>
         <div id="gamegrid">
             <div></div>
             <div></div>
