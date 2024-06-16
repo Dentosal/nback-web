@@ -124,7 +124,8 @@
                                 :data-correct="entry.correct.color"
                                 :data-incorrect="!entry.correct.color"
                                 :data-pressed="'color' in entry.response"
-                                x-text="colors[entry.color]"
+                                :style="{backgroundColor: colors[entry.color], fontWeight: 'bold'}"
+                                x-text="entry.color + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
                                 :data-correct="entry.correct.shape"
