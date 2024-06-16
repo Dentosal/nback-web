@@ -41,6 +41,10 @@ const colors = [
 
 const readSettings = () => {
     const settingsStr = localStorage.getItem('settings');
+    if (settingsStr === null) {
+        writeSettings(defaultSettings);
+        return defaultSettings;
+    }
     try {
         return JSON.parse(settingsStr);
     } catch {
