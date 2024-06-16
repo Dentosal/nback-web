@@ -15,7 +15,7 @@
         <div id="menucontent">
             <div>
                 <h2>Moni <i>n</i>-taa</h2>
-                <p>Työmuistia kehittävä harjoitus <a href="https://gwern.net/dnb-faq"><i>Gwern</i>in artikkelin suosituksilla.</a></p>
+                <p>Työmuistia kehittävä harjoitus <a href="https://gwern.net/dnb-faq" target="_blank"><i>Gwern</i>in artikkelin suosituksilla.</a></p>
     
                 <p>
                     Tämä versio tallentaa kaiken paikallisesti selaimeesi,
@@ -82,8 +82,8 @@
                 <input type="button" value="Takaisin" @click="backToMenu">
             </div>
             <div>
-                <span x-text="$store.runHistory[$store.state.selectedRun].settings.n"></span> kohtaa taaksepäin
-                <span x-text="$store.runHistory[$store.state.selectedRun].settings.runLength"></span> kpl sessio
+                <span x-text="$store.runHistory[$store.state.selectedRun].settings.n"></span> kohtaa taaksepäin,
+                <span x-text="$store.runHistory[$store.state.selectedRun].settings.runLength"></span> kpl sessio,
                 <span x-text="$store.runHistory[$store.state.selectedRun].settings.secondsPerTrial"></span> sekunnin välein
             </div>
             <div>
@@ -166,7 +166,7 @@
         </div>
         <table>
             <thead>
-                <th>Numero</th>
+                <th>Nro</th>
                 <th>Ajankohta (päättyi)</th>
                 <th>Asetukset</th>
                 <th>Tulos</th>
@@ -175,8 +175,8 @@
             <tbody>
                 <template x-for="(run, i) in $store.runHistory" :key="i">
                     <tr>
-                        <td x-text="i"></td>
-                        <td x-text="run.endMoment"></td>
+                        <td x-text="i + 1"></td>
+                        <td x-text="new Date(run.endMoment).toLocaleString('fi-FI')"></td>
                         <td>
                             n=<span x-text="run.settings.n"></span>
                             <span x-text="run.settings.runLength"></span>kpl@<span x-text="run.settings.secondsPerTrial"></span>s
