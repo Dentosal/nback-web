@@ -131,10 +131,6 @@ input:invalid, label:has(:invalid) {
     font-size: 3rem;
 }
 
-#responses div[data-correct=true] {
-    background-color: lightgreen;
-}
-
 #responses div[data-correct=false] {
     background-color: lightcoral;
 }

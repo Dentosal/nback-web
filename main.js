@@ -101,7 +101,7 @@ const stepGame = () => {
     setTimeout(stepGame, perTrial * 1000);
 }
 const stepCheckPrev = state => {
-    // Check previous trial, if any, and flash responses
+    // Check previous trial, if any, and flash error responses
     if (state.currentRun.length !== 0) {
         let correct = checkCorrect();
         state.currentRun.at(-1).correct = correct;
@@ -184,11 +184,8 @@ const checkCorrect = () => {
         let lookback = state.currentRun.at(-(settings.n + 1));
         let current = state.currentRun.at(-1);
 
-        console.log(JSON.stringify(lookback), JSON.stringify(current));
-    
         for (k of Object.keys(correct)) {
-            console.log("k", k, lookback[k], current[k]);
-            let resp = k in state.currentRun.at(-1).response;
+            let resp = k in current.response;
             let actual = lookback[k] == current[k];
             correct[k] = resp === actual;
         }
