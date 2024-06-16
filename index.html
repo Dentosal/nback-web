@@ -28,7 +28,7 @@
                 <input type="button" value="Jaa parhaat tulokset">
             </div>
             <div class="mid large">
-                <input type="button" value="Aloita" :disabled="!$store.state.hasValidSettings" @click="startGame()">
+                <input type="button" value="Aloita" autofocus ="!$store.state.hasValidSettings" @click="startGame()">
             </div>
         </div>
         <form id="settings" action="javascript:void(0);" @change="updateSettings()" @keydown="updateSettings()">
@@ -71,6 +71,22 @@
         </div>
     </dialog>
 
+    <dialog id="runstats">
+        <h2>Valmis! Tulokset</h2>
+        <code x-text="JSON.stringify($store.state.currentRun)"></code>
+        <code x-text="JSON.stringify($store.settings)"></code>
+        <table>
+            <thead>
+                <th>Kierros</th>
+                <th x-show="$store.settings.position.enabled">Sijainti</th>
+                <th x-show="$store.settings.audio.enabled">Ääni</th>
+                <th x-show="$store.settings.color.enabled">Väri</th>
+                <th x-show="$store.settings.shape.enabled">Muoto</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </dialog>
+
     <div id="game">
         <div id="gamegrid">
             <div></div>
@@ -83,11 +99,11 @@
             <div></div>
             <div></div>
         </div>
-        <div id="indicators">
-            <div x-show="$store.settings.position.enabled">Sijainti <span x-text="$store.settings.position.key"></span></div>
-            <div x-show="$store.settings.audio.enabled">Ääni <span x-text="$store.settings.audio.key"></span></div>
-            <div x-show="$store.settings.color.enabled">Väri <span x-text="$store.settings.color.key"></span></div>
-            <div x-show="$store.settings.shape.enabled">Muoto <span x-text="$store.settings.shape.key"></span></div>
+        <div id="responses">
+            <div class="position" x-show="$store.settings.position.enabled">Sijainti <span x-text="$store.settings.position.key"></span></div>
+            <div class="audio" x-show="$store.settings.audio.enabled">Ääni <span x-text="$store.settings.audio.key"></span></div>
+            <div class="color" x-show="$store.settings.color.enabled">Väri <span x-text="$store.settings.color.key"></span></div>
+            <div class="shape" x-show="$store.settings.shape.enabled">Muoto <span x-text="$store.settings.shape.key"></span></div>
         </div>
     </div>
 </body>

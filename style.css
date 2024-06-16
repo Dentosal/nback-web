@@ -12,18 +12,21 @@ input[type=button] {
     font-weight: bold;
 }
 
-#menu[open] {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 1rem;
+dialog[open] {
     background-color: rgb(152, 205, 223);
     border: 2px solid black;
     border-radius: 1rem;
     padding: 1rem;
 }
 
-#menu::backdrop {
+#menu[open] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+dialog[open]::backdrop {
     backdrop-filter: blur(5px);
     background-color: rgba(0.8, 0.8, 0.8, 0.8);
 }
@@ -103,14 +106,14 @@ input:invalid, label:has(:invalid) {
     aspect-ratio: 1/1;
 }
 
-#indicators {
+#responses {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
 }
 
-#indicators div {
+#responses div {
     flex: 1;
     text-align: center;
     padding: 0.5rem;
@@ -122,8 +125,45 @@ input:invalid, label:has(:invalid) {
     align-items: center;
 }
 
-#indicators span {
+#responses span {
     font-variant: small-caps;
     font-family: monospace;
     font-size: 3rem;
+}
+
+#responses div[data-correct=true] {
+    background-color: lightgreen;
+}
+
+#responses div[data-correct=false] {
+    background-color: lightcoral;
+}
+
+#runstats {
+    max-width: 800px;
+}
+
+#runstats table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    border-style: hidden;
+}
+
+#runstats td {
+    border: 1px solid black;
+}
+
+#runstats td[data-pressed=true]::after {
+    content: "⇥";
+}
+
+#runstats td[data-correct=true]::after {
+    content: "✔";
+    color: green;
+}
+
+#runstats td[data-correct=false]::after {
+    content: "✘";
+    color: red;
 }
