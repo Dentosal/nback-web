@@ -11,7 +11,7 @@
 </head>
 
 <body x-data>
-    <dialog id="menu" @keydown="$event.preventDefault()">
+    <dialog id="menu" @keydown="if ($event.key === 'Escape') $event.preventDefault();">
         <div id="menucontent">
             <div>
                 <h2>Moni <i>n</i>-taa</h2>
