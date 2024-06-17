@@ -115,7 +115,7 @@ input:invalid, label:has(:invalid) {
     gap: 1rem;
 }
 
-#responses div {
+#responses > div {
     flex: 1;
     text-align: center;
     padding: 0.5rem;
@@ -125,6 +125,9 @@ input:invalid, label:has(:invalid) {
 
     display: grid;
     align-items: center;
+}
+#responses > div.pending {
+    background-color: skyblue;
 }
 
 #responses span {
