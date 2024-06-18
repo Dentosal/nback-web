@@ -25,6 +25,10 @@
                 </p>
                 <p>
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
+                    Viimeisimmät muutokset:
+                    <ul>
+                        <li>Uusia väripaletteja tarjolla. Oletusvärit vaihdettu selkeämpiin.</li>
+                    </ul>
                 </p>
             </div>
             <div class="mid">
@@ -65,7 +69,14 @@
                 <input type="text" :value="$store.settings.audio.key" @keydown.prevent="$store.settings.audio.key=event.key" class="key"></span>
             </div>
             <div>
-                <label><input type="checkbox" x-model.boolean="$store.settings.color.enabled">Väri</label>
+                <label>
+                    <input type="checkbox" x-model.boolean="$store.settings.color.enabled">Väri
+                    <select x-model="$store.settings.color.set">
+                        <template x-for="color of Object.keys(colors)">
+                            <option :value="color" x-text="color" :selected="color == $store.settings.color.set"></option>
+                        </template>
+                    </select>
+                </label>
                 <input type="text" :value="$store.settings.color.key" @keydown.prevent="$store.settings.color.key=event.key" class="key"></span>
             </div>
             <div>
@@ -91,7 +102,8 @@
                 <input type="checkbox" inert :value="$store.settings.position.enabled">Sijainti
                 <input type="checkbox" inert :value="$store.settings.audio.enabled">Ääni
                     (<span x-text="$store.runHistory[$store.state.selectedRun].settings.audio.set"></span>)
-                <input type="checkbox" inert :value="$store.settings.color.enabled">Väri
+                    <input type="checkbox" inert :value="$store.settings.color.enabled">Väri
+                    (<span x-text="$store.runHistory[$store.state.selectedRun].settings.color.set"></span>)
                 <input type="checkbox" inert :value="$store.settings.shape.enabled">Muoto
             </div>
             <div>
@@ -125,7 +137,7 @@
                                 :data-correct="entry.correct.color"
                                 :data-incorrect="!entry.correct.color"
                                 :data-pressed="'color' in entry.response"
-                                :style="{backgroundColor: colors[entry.color], fontWeight: 'bold'}"
+                                :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color], fontWeight: 'bold'}"
                                 x-text="entry.color + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"

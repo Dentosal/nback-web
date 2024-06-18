@@ -1,4 +1,11 @@
-const defaultSettings = {
+// Normalize settings over app versions
+const normalizeSettings = settings => {
+    settings.audio.set = settings.audio.set || 'fi_automatic';
+    settings.color.set = settings.color.set || 'high_contrast';
+    return settings;
+};
+
+const defaultSettings = normalizeSettings({
     n: 2,
     secondsPerTrial: 3,
     runLength: 100,
@@ -14,12 +21,13 @@ const defaultSettings = {
     color: {
         enabled: false,
         key: 'k',
+        set: 'high_contrast',
     },
     shape: {
         enabled: false,
         key: 's',
     },
-};
+});
 
 const audios = [
     'fi_automatic',
@@ -27,17 +35,41 @@ const audios = [
     'en_automatic',
 ];
 
-const colors = [
-    "#332288",
-    "#117733",
-    "#44AA99",
-    "#88CCEE",
-    "#DDCC77",
-    "#CC6677",
-    "#AA4499",
-    "#882255",
-    "#ffffff",
-];
+const colors = {
+    "high_contrast": [
+        "red",
+        "green",
+        "blue",
+        "yellow",
+        "#a61",
+        "purple",
+        "violet",
+        "black",
+        "white"
+    ],
+    "colorblind": [
+        "#332288",
+        "#117733",
+        "#44AA99",
+        "#88CCEE",
+        "#DDCC77",
+        "#CC6677",
+        "#AA4499",
+        "#882255",
+        "#ffffff",
+    ],
+    "confusing": [
+        "red",
+        "pink",
+        "orange",
+        "salmon",
+        "green",
+        "lime",
+        "olive",
+        "limegreen",
+        "lawngreen",
+    ]
+};
 
 const readSettings = () => {
     const settingsStr = localStorage.getItem('settings');
@@ -46,7 +78,7 @@ const readSettings = () => {
         return defaultSettings;
     }
     try {
-        return JSON.parse(settingsStr);
+        return normalizeSettings(JSON.parse(settingsStr));
     } catch {
         writeSettings(defaultSettings);
         return defaultSettings;
@@ -144,7 +176,7 @@ const stepPrimary = () => {
     let active = settings.position.enabled ? entry.position + 1 : 5;
     let ac = document.querySelector('#gamegrid>div:nth-child(' + active + ')');
     ac.classList.add('active');
-    ac.style.setProperty('--color', settings.color.enabled ? colors[entry.color] : "#00f");
+    ac.style.setProperty('--color', settings.color.enabled ? colors[settings.color.set][entry.color] : "#00f");
 
     if (settings.audio.enabled) {
         audioCtx.src = 'audio/' + settings.audio.set + '/' + (entry.audio + 1) + '.mp3';
@@ -203,7 +235,10 @@ const endGame = () => {
 
 const readRunHistory = () => {
     try {
-        return JSON.parse(localStorage.getItem('history') || '[]');
+        return JSON.parse(localStorage.getItem('history') || '[]').map(run => {
+            run.settings = normalizeSettings(run.settings);
+            return run;
+        });
     } catch {
         return [];
     }
