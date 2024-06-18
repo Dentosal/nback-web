@@ -223,30 +223,6 @@ const updateRunHistory = () => {
     Alpine.store('runHistory', newHistory);
 };
 
-const runScore = run => {
-    let cats = run.settings.position.enabled + run.settings.audio.enabled + run.settings.color.enabled + run.settings.shape.enabled;
-    if (cats === 0) {
-        return 1;
-    }
-    let divider = cats * run.run.length;
-    return run.run.reduce((acc, x) => {
-        let correct = 0;
-        if (run.settings.position.enabled) {
-            correct += x.correct.position;
-        }
-        if (run.settings.audio.enabled) {
-            correct += x.correct.audio;
-        }
-        if (run.settings.color.enabled) {
-            correct += x.correct.color;
-        }
-        if (run.settings.shape.enabled) {
-            correct += x.correct.shape;
-        }
-        return acc + correct;
-    }, 0) / divider;
-};
-
 const closeThisModal = event => {
     let t = event.target;
     while (t.tagName !== 'DIALOG') {
