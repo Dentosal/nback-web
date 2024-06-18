@@ -42,8 +42,8 @@ const colors = {
         "blue",
         "yellow",
         "#a61",
-        "purple",
-        "violet",
+        "indigo",
+        "fuchsia",
         "black",
         "white"
     ],
