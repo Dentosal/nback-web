@@ -27,6 +27,7 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
+                        <li>Tallennetaan viive ennen painallusta</li>
                         <li>Lisätty zoomer-ystävällinen aktiivisuusvinouma-asetus</li>
                         <li>Uusia väripaletteja tarjolla. Oletusvärit vaihdettu selkeämpiin.</li>
                     </ul>
@@ -135,18 +136,21 @@
                                 :data-correct="entry.correct.position"
                                 :data-incorrect="!entry.correct.position"
                                 :data-pressed="'position' in entry.response"
+                                :data-latency="entry.latency?.position ?? '???'"
                                 x-text="entry.position + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
                                 :data-correct="entry.correct.audio"
                                 :data-incorrect="!entry.correct.audio"
                                 :data-pressed="'audio' in entry.response"
+                                :data-latency="entry.latency?.audio ?? '???'"
                                 x-text="entry.audio + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
                                 :data-correct="entry.correct.color"
                                 :data-incorrect="!entry.correct.color"
                                 :data-pressed="'color' in entry.response"
+                                :data-latency="entry.latency?.color ?? '???'"
                                 :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color], fontWeight: 'bold'}"
                                 x-text="entry.color + 1"
                             ></td>
@@ -154,6 +158,7 @@
                                 :data-correct="entry.correct.shape"
                                 :data-incorrect="!entry.correct.shape"
                                 :data-pressed="'shape' in entry.response"
+                                :data-latency="entry.latency?.shape ?? '???'"
                                 x-text="entry.shape"
                             ></td>
                         </tr>

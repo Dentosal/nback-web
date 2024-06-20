@@ -150,6 +150,8 @@ const stepCheckPrev = state => {
     }, 400);
 }
 
+let stimuliStartedAt = null;
+
 const stepPrimary = () => {
     let settings = Alpine.store('settings');
     let state = Alpine.store('state');
@@ -159,6 +161,7 @@ const stepPrimary = () => {
     // Create entry and append to current run
     let entry = {
         response: {},
+        latency: {},
     };
     if (settings.position.enabled) {
         if (nback !== undefined && Math.random() < settings.actionBias) {
@@ -204,6 +207,8 @@ const stepPrimary = () => {
         audioCtx.src = 'audio/' + settings.audio.set + '/' + (entry.audio + 1) + '.mp3';
         audioCtx.play();
     }
+
+    stimuliStartedAt = performance.now();
 };
 
 const stepPost = () => {
@@ -296,16 +301,23 @@ const backToMenu = event => {
 const sendResponse = category => {
     let settings = Alpine.store('settings');
     let state = Alpine.store('state');
+    
+    let latency = performance.now() - stimuliStartedAt; // ms
 
     if (state.currentRun.length !== 0) {
+        let entry = state.currentRun.at(-1);
         if (category === 'position') {
-            state.currentRun.at(-1).response.position = true;
+            entry.response.position = true;
+            entry.latency.position = entry.latency.position || latency;
         } else if (category === 'audio') {
-            state.currentRun.at(-1).response.audio = true;
+            entry.response.audio = true;
+            entry.latency.audio = entry.latency.audio || latency;
         } else if (category === 'color') {
-            state.currentRun.at(-1).response.color = true;
+            entry.response.color = true;
+            entry.latency.color = entry.latency.color || latency;
         } else if (category === 'shape') {
-            state.currentRun.at(-1).response.shape = true;
+            entry.response.shape = true;
+            entry.latency.shape = entry.latency.shape || latency;
         } else {
             console.error("Unknown category", category);
         }

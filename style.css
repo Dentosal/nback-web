@@ -177,7 +177,8 @@ input:invalid, label:has(:invalid) {
 
 
 #runstats td[data-pressed]::before {
-    content: "⇥";
+    content: "⇥(" attr(data-latency) "ms) ";
+    text-align: left;
 }
 
 #runstats td[data-correct]::after {
