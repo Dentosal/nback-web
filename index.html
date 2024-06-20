@@ -27,6 +27,7 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
+                        <li>Lisätty zoomer-ystävällinen aktiivisuusvinouma-asetus</li>
                         <li>Uusia väripaletteja tarjolla. Oletusvärit vaihdettu selkeämpiin.</li>
                     </ul>
                 </p>
@@ -46,13 +47,22 @@
                 <input type="button" class="danger" value="Oletukset" @click="writeSettings(defaultSettings); $store.settings = readSettings()">
             </div>
             <div>
-                <label><input type="number" x-model.number="$store.settings.n" value=2 min=1 step=1>kohtaa taaksepäin</label>
+                <input type="number" x-model.number="$store.settings.n" id="settings-n" min=1 max=100 step=1>
+                <label for="settings-n">kohtaa taaksepäin</label>
             </div>
             <div>
-                <label><input type="number" x-model.number="$store.settings.runLength" value=100 :min="parseInt($store.settings.n) + 1" step=1>kpl sessio</label>
+                <input type="number" x-model.number="$store.settings.runLength" id="settings-runLength" :min="parseInt($store.settings.n) + 1" step=1>
+                <label for="settings-runLength">kpl sessio</label>
             </div>
             <div>
-                <label><input type="number" x-model.number="$store.settings.secondsPerTrial" value=3 min=0.5 step=0.1>sekunnin välein</label>
+                <input type="number" x-model.number="$store.settings.secondsPerTrial" id="settings-secondsPerTrial" min=0.5 max=10.0 step=0.1>
+                <label for="settings-secondsPerTrial">sekunnin välein</label>
+            </div>
+            <div>
+                <input type="number" x-model.number="$store.settings.actionBias" id="settings-actionBias" min=0.0 max=0.9 step=0.05>
+                <label for="settings-actionBias">aktiivisuusvinouma
+                    <span data-tooltip="lisätodennäköisyys sille, että ärsyke täsmää n-taa"></span>
+                </label>
             </div>
             <div>
                 <label><input type="checkbox" x-model.boolean="$store.settings.position.enabled">Sijainti</label>

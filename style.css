@@ -8,6 +8,22 @@ body {
     font-weight: bold;
 }
 
+span[data-tooltip]::before {
+    content: 'ⓘ';
+    color: blue;
+    font-weight: bolder;
+    padding: 0.3rem;
+}
+span[data-tooltip]:hover:after {
+    content: attr(data-tooltip);
+    border: 1px solid black;
+    padding: 0.3rem;
+    display: block;
+    position: absolute;
+    border: 1px solid black;
+    background: #eee;
+}
+
 dialog[open] {
     background-color: rgb(152, 205, 223);
     border: 2px solid black;
@@ -65,6 +81,9 @@ dialog[open]::backdrop {
     justify-content: space-between;
     align-items: center;
     min-width: 300px;
+}
+#settings>div:not(:first-child)>input {
+    width: 50%;
 }
 
 input:invalid, label:has(:invalid) {

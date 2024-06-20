@@ -2,6 +2,7 @@
 const normalizeSettings = settings => {
     settings.audio.set = settings.audio.set || 'fi_automatic';
     settings.color.set = settings.color.set || 'high_contrast';
+    settings.actionBias = settings.actionBias === undefined ? 0.1 : settings.actionBias;
     return settings;
 };
 
@@ -9,6 +10,7 @@ const defaultSettings = normalizeSettings({
     n: 2,
     secondsPerTrial: 3,
     runLength: 100,
+    actionBias: 0.1,
     position: {
         enabled: true,
         key: 'a',
@@ -150,24 +152,44 @@ const stepCheckPrev = state => {
 
 const stepPrimary = () => {
     let settings = Alpine.store('settings');
+    let state = Alpine.store('state');
+
+    let nback = state.currentRun.at(-settings.n);
 
     // Create entry and append to current run
     let entry = {
         response: {},
     };
     if (settings.position.enabled) {
-        entry.position = Math.floor(Math.random() * 9);
+        if (nback !== undefined && Math.random() < settings.actionBias) {
+            entry.position = nback.position;
+        } else {
+            entry.position = Math.floor(Math.random() * 9);
+        }
     }
     if (settings.audio.enabled) {
-        entry.audio = Math.floor(Math.random() * 9);
+        if (nback !== undefined && Math.random() < settings.actionBias) {
+            entry.audio = nback.audio;
+        } else {
+            entry.audio = Math.floor(Math.random() * 9);
+        }
     }
     if (settings.color.enabled) {
-        entry.color = Math.floor(Math.random() * 9);
+        if (nback !== undefined && Math.random() < settings.actionBias) {
+            entry.color = nback.color;
+        } else {
+            entry.color = Math.floor(Math.random() * 9);
+        }
     }
     if (settings.shape.enabled) {
-        entry.shape = Math.floor(Math.random() * 9);
+        if (nback !== undefined && Math.random() < settings.actionBias) {
+            entry.shape = nback.shape;
+        } else {
+            entry.shape = Math.floor(Math.random() * 9);
+        }
     }
-    Alpine.store('state').currentRun.push(entry);
+
+    state.currentRun.push(entry);
 
     // Activate relevant stimuli
     for (cell of document.querySelectorAll('#gamegrid>div')) {
