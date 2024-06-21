@@ -1,5 +1,13 @@
 // History statistics
 
+const avgOrZero = array => {
+    if (array.length === 0) {
+        return 0;
+    }
+    return array.reduce((acc, x) => acc + x, 0) / array.length;
+}
+
+
 // Simple % score for a run
 const runScore = run => {
     let cats = run.settings.position.enabled + run.settings.audio.enabled + run.settings.color.enabled + run.settings.shape.enabled;
@@ -71,3 +79,11 @@ const someStats = () => {
         console.log(mode, avg);
     });
 };
+
+
+const columnLatencyAvgStr = (entry, column) => avgOrZero(entry.run.map(entry => entry.latency[column]).filter(a => a !== undefined)) + "ms";
+const columnScoreStr = (entry, column) => {
+    let score = entry.run.filter(entry => entry.correct[column]).length;
+    let p = score / entry.settings.runLength;
+    return Math.round(p*100) + "% (" + score + ")";
+}

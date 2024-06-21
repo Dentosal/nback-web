@@ -164,6 +164,8 @@ input:invalid, label:has(:invalid) {
 }
 
 #runstats, #history {
+    min-width: max(50vw, 800px);
+
     table {
         width: 100%;
         text-align: center;

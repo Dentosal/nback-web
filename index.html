@@ -27,6 +27,7 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
+                        <li>Lisätty dataa historia- ja suoritusnäkymiin</li>
                         <li>Tallennetaan viive ennen painallusta</li>
                         <li>Lisätty zoomer-ystävällinen aktiivisuusvinouma-asetus</li>
                         <li>Uusia väripaletteja tarjolla. Oletusvärit vaihdettu selkeämpiin.</li>
@@ -108,6 +109,7 @@
                 <span x-text="$store.runHistory[$store.state.selectedRun].settings.n"></span> kohtaa taaksepäin,
                 <span x-text="$store.runHistory[$store.state.selectedRun].settings.runLength"></span> kpl sessio,
                 <span x-text="$store.runHistory[$store.state.selectedRun].settings.secondsPerTrial"></span> sekunnin välein
+                <span x-text="$store.runHistory[$store.state.selectedRun].settings.actionBias"></span> aktiivisuusvinouma
             </div>
             <div>
                 <input type="checkbox" inert :value="$store.settings.position.enabled">Sijainti
@@ -124,9 +126,13 @@
                 <thead>
                     <th>Kierros</th>
                     <th x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled">Sijainti</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled">Reaktio</th>
                     <th x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled">Ääni</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled">Reaktio</th>
                     <th x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled">Väri</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled">Reaktio</th>
                     <th x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled">Muoto</th>
+                    <th x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled">Reaktio</th>
                 </thead>
                 <tbody>
                     <template x-for="(entry, i) in $store.runHistory[$store.state.selectedRun].run">
@@ -135,51 +141,79 @@
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled"
                                 :data-correct="entry.correct.position"
                                 :data-incorrect="!entry.correct.position"
+                                x-text="entry.position + 1"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled"
                                 :data-pressed="'position' in entry.response"
                                 :data-latency="entry.latency?.position ?? '???'"
-                                x-text="entry.position + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
                                 :data-correct="entry.correct.audio"
                                 :data-incorrect="!entry.correct.audio"
+                                x-text="entry.audio + 1"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
                                 :data-pressed="'audio' in entry.response"
                                 :data-latency="entry.latency?.audio ?? '???'"
-                                x-text="entry.audio + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
                                 :data-correct="entry.correct.color"
                                 :data-incorrect="!entry.correct.color"
+                                :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color], fontWeight: 'bold'}"
+                                x-text="entry.color + 1"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
                                 :data-pressed="'color' in entry.response"
                                 :data-latency="entry.latency?.color ?? '???'"
                                 :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color], fontWeight: 'bold'}"
-                                x-text="entry.color + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
                                 :data-correct="entry.correct.shape"
                                 :data-incorrect="!entry.correct.shape"
+                                x-text="entry.shape"
+                            ></td>
+                            <td x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
                                 :data-pressed="'shape' in entry.response"
                                 :data-latency="entry.latency?.shape ?? '???'"
-                                x-text="entry.shape"
                             ></td>
                         </tr>
                     </template>
                     <tr>
-                        <td>Yhteensä</td>
+                        <td>Tulos</td>
                         <td
                             x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled"
-                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.position).length"
+                            x-text="columnScoreStr($store.runHistory[$store.state.selectedRun], 'position')"
+                        ></td>
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.position.enabled"
+                            x-text="columnLatencyAvgStr($store.runHistory[$store.state.selectedRun], 'position')"
+                        ></td>
+
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
+                            x-text="columnScoreStr($store.runHistory[$store.state.selectedRun], 'audio')"
                         ></td>
                         <td
                             x-show="$store.runHistory[$store.state.selectedRun].settings.audio.enabled"
-                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.audio).length"
+                            x-text="columnLatencyAvgStr($store.runHistory[$store.state.selectedRun], 'audio')"
+                        ></td>
+
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
+                            x-text="columnScoreStr($store.runHistory[$store.state.selectedRun], 'color')"
                         ></td>
                         <td
                             x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
-                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.color).length"
+                            x-text="columnLatencyAvgStr($store.runHistory[$store.state.selectedRun], 'color')"
+                        ></td>
+
+                        <td
+                            x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
+                            x-text="columnScoreStr($store.runHistory[$store.state.selectedRun], 'shape')"
                         ></td>
                         <td
                             x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
-                            x-text="$store.runHistory[$store.state.selectedRun].run.filter(entry => entry.correct.shape).length"
+                            x-text="columnLatencyAvgStr($store.runHistory[$store.state.selectedRun], 'shape')"
                         ></td>
                     </tr>
                 </tbody>
@@ -194,11 +228,15 @@
         </div>
         <table>
             <thead>
-                <th>Nro</th>
-                <th>Ajankohta (päättyi)</th>
-                <th>Asetukset</th>
-                <th>Tulos</th>
-                <th>Tarkastele</th>
+                <th>nro</th>
+                <th>milloin päättyi</th>
+                <th>tyyli</th>
+                <th>n</th>
+                <th>kpl</th>
+                <th>viive</th>
+                <th>bias</th>
+                <th>tulos</th>
+                <th>avaa</th>
             </thead>
             <tbody>
                 <template x-for="(run, i) in $store.runHistory" :key="i">
@@ -206,15 +244,15 @@
                         <td x-text="i + 1"></td>
                         <td x-text="new Date(run.endMoment).toLocaleString('fi-FI')"></td>
                         <td>
-                            n=<span x-text="run.settings.n"></span>
-                            <span x-text="run.settings.runLength"></span>kpl@<span x-text="run.settings.secondsPerTrial"></span>s
-                            (
-                                <span x-show="run.settings.position.enabled">S</span>
-                                <span x-show="run.settings.audio.enabled">Ä</span>
-                                <span x-show="run.settings.color.enabled">V</span>
-                                <span x-show="run.settings.shape.enabled">M</span>
-                            )
+                            <span x-show="run.settings.position.enabled">S</span>
+                            <span x-show="run.settings.audio.enabled">Ä</span>
+                            <span x-show="run.settings.color.enabled">V</span>
+                            <span x-show="run.settings.shape.enabled">M</span>
                         </td>
+                        <td x-text="run.settings.n"></td>
+                        <td x-text="run.settings.runLength"></td>
+                        <td x-text="run.settings.secondsPerTrial + 's'"></td>
+                        <td x-text="run.settings.actionBias"></td>
                         <td x-text="Math.round(runScore(run)*100) + '%'"></td>
                         <td>
                             <input type="button" value="Avaa"
