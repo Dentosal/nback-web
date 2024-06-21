@@ -81,7 +81,7 @@ const someStats = () => {
 };
 
 
-const columnLatencyAvgStr = (entry, column) => avgOrZero(entry.run.map(entry => entry.latency[column]).filter(a => a !== undefined)) + "ms";
+const columnLatencyAvgStr = (entry, column) => Math.round(avgOrZero(entry.run.map(entry => entry.latency[column]).filter(a => a !== undefined))) + "ms";
 const columnScoreStr = (entry, column) => {
     let score = entry.run.filter(entry => entry.correct[column]).length;
     let p = score / entry.settings.runLength;
