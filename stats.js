@@ -87,3 +87,38 @@ const columnScoreStr = (entry, column) => {
     let p = score / entry.settings.runLength;
     return Math.round(p*100) + "% (" + score + ")";
 }
+
+const formatTime = seconds => {
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    seconds = seconds % 60;
+    let result = "";
+    if (hours > 0) {
+        result += hours + "h";
+    }
+    if (minutes > 0) {
+        result += minutes + "m";
+    }
+    if (seconds > 0) {
+        result += seconds + "s";
+    }
+    if (result === "") {
+        result = "0s";
+    }
+    return result;
+};
+
+const totalTime = () => {
+    let history = readRunHistory();
+    return history.reduce((acc, run) => acc + run.run.length * run.settings.secondsPerTrial, 0);
+}
+
+const totalTimeToday = () => {
+    let history = readRunHistory();
+    let today = (new Date().toLocaleString('fi-FI')).split(" ")[0];
+
+    return history.filter(
+        run => (new Date(run.endMoment).toLocaleString('fi-FI')).split(" ")[0] === today
+    ).reduce((acc, run) => acc + run.run.length * run.settings.secondsPerTrial, 0);
+}

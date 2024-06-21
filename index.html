@@ -226,6 +226,10 @@
             <h2>Historia</h2>
             <input type="button" value="Takaisin" @click="backToMenu">
         </div>
+        <div>
+            Pelattu yhteensä <span x-text="formatTime(totalTime())"></span>, josta
+            <span x-text="formatTime(totalTimeToday())"></span> tänään.
+        </div>
         <table>
             <thead>
                 <th>nro</th>
