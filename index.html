@@ -227,8 +227,8 @@
             <input type="button" value="Takaisin" @click="backToMenu">
         </div>
         <div>
-            Pelattu yhteensä <span x-text="formatTime(totalTime())"></span>, josta
-            <span x-text="formatTime(totalTimeToday())"></span> tänään.
+            Pelattu yhteensä <span x-text="formatTime(totalTime($store.runHistory))"></span>, josta
+            <span x-text="formatTime(totalTimeToday($store.runHistory))"></span> tänään.
         </div>
         <table>
             <thead>

@@ -109,13 +109,11 @@ const formatTime = seconds => {
     return result;
 };
 
-const totalTime = () => {
-    let history = readRunHistory();
+const totalTime = history => {
     return history.reduce((acc, run) => acc + run.run.length * run.settings.secondsPerTrial, 0);
 }
 
-const totalTimeToday = () => {
-    let history = readRunHistory();
+const totalTimeToday = history => {
     let today = (new Date().toLocaleString('fi-FI')).split(" ")[0];
 
     return history.filter(
