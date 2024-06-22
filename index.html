@@ -27,10 +27,10 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
+                        <li>Korjattu multitouch-tuki ja ulkoasu mobiililaitteilla</li>
                         <li>Lisätty dataa historia- ja suoritusnäkymiin</li>
                         <li>Tallennetaan viive ennen painallusta</li>
                         <li>Lisätty zoomer-ystävällinen aktiivisuusvinouma-asetus</li>
-                        <li>Uusia väripaletteja tarjolla. Oletusvärit vaihdettu selkeämpiin.</li>
                     </ul>
                 </p>
             </div>
@@ -159,13 +159,13 @@
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
                                 :data-correct="entry.correct.color"
                                 :data-incorrect="!entry.correct.color"
-                                :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color], fontWeight: 'bold'}"
+                                :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color]}"
+                                class="outline"
                                 x-text="entry.color + 1"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.color.enabled"
                                 :data-pressed="'color' in entry.response"
                                 :data-latency="entry.latency?.color ?? '???'"
-                                :style="{backgroundColor: colors[$store.runHistory[$store.state.selectedRun].settings.color.set][entry.color], fontWeight: 'bold'}"
                             ></td>
                             <td x-show="$store.runHistory[$store.state.selectedRun].settings.shape.enabled"
                                 :data-correct="entry.correct.shape"
@@ -290,22 +290,22 @@
         <div id="responses">
             <div class="position" x-show="$store.settings.position.enabled"
                 :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.position }"
-                @click="sendResponse('position')">
+                @click="sendResponse('position')" @touchstart="sendResponse('position')">
                 Sijainti <span x-text="$store.settings.position.key"></span>
             </div>
             <div class="audio" x-show="$store.settings.audio.enabled"
                 :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.audio }"
-                @click="sendResponse('audio')">
+                @click="sendResponse('audio')" @touchstart="sendResponse('audio')">
                 Ääni <span x-text="$store.settings.audio.key"></span>
             </div>
             <div class="color" x-show="$store.settings.color.enabled"
                 :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.color }"
-                @click="sendResponse('color')">
+                @click="sendResponse('color')" @touchstart="sendResponse('color')">
                 Väri <span x-text="$store.settings.color.key"></span>
             </div>
             <div class="shape" x-show="$store.settings.shape.enabled"
                 :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.shape }"
-                @click="sendResponse('shape')">
+                @click="sendResponse('shape')" @touchstart="sendResponse('shape')">
                 Muoto <span x-text="$store.settings.shape.key"></span>
             </div>
         </div>

@@ -8,6 +8,12 @@ body {
     font-weight: bold;
 }
 
+.outline {
+    font-weight: bolder;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke: 1px black;
+}
+
 span[data-tooltip]::before {
     content: 'ⓘ';
     color: blue;
@@ -29,8 +35,9 @@ dialog[open] {
     border: 2px solid black;
     border-radius: 1rem;
     padding: 1rem;
+    overscroll-behavior: contain;
 }
-
+    
 #menu[open] {
     display: flex;
     flex-wrap: wrap;
@@ -164,9 +171,8 @@ input:invalid, label:has(:invalid) {
 }
 
 #runstats, #history {
-    min-width: max(50vw, 800px);
-
     table {
+        min-width: min(500px, 90vw);
         width: 100%;
         text-align: center;
         border-collapse: collapse;

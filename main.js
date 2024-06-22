@@ -299,7 +299,6 @@ const backToMenu = event => {
 }
 
 const sendResponse = category => {
-    let settings = Alpine.store('settings');
     let state = Alpine.store('state');
     
     let latency = performance.now() - stimuliStartedAt; // ms
