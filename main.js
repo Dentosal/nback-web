@@ -2,20 +2,23 @@
 const normalizeSettings = settings => {
     settings.audio.set = settings.audio.set || 'fi_automatic';
     settings.color.set = settings.color.set || 'high_contrast';
+    return settings
+}
 
+const patchHistorySettings = entry => {
     // Patch for old settings where bias was not set, but we accidentally overwrote it to 0.1.
     // endMoment was introduced in the same version, so it's missing iff actionBias should be missing
     // To avoid permantly destroying data if this reasoning is wrong, we save it to backup__actionBias as well.
-    if (settings.endMoment === undefined) {
-        if (settings.backup__actionBias === undefined) {
-            settings.backup__actionBias = settings.actionBias;
+    if (entry.endMoment === undefined) {
+        if (entry.settings.backup__actionBias === undefined) {
+            entry.settings.backup__actionBias = entry.settings.actionBias;
         }
-        settings.actionBias = 0.0;
-    } else if (settings.actionBias === undefined) {
-        settings.actionBias = 0.1;
+        entry.settings.actionBias = 0.0;
+    } else if (entry.settings.actionBias === undefined) {
+        entry.settings.actionBias = 0.1;
     }
 
-    return settings;
+    return entry;
 };
 
 const defaultSettings = normalizeSettings({
@@ -274,10 +277,7 @@ const endGame = () => {
 
 const readRunHistory = () => {
     try {
-        return JSON.parse(localStorage.getItem('history') || '[]').map(run => {
-            run.settings = normalizeSettings(run.settings);
-            return run;
-        });
+        return JSON.parse(localStorage.getItem('history') || '[]').map(patchHistorySettings).map(normalizeSettings);
     } catch {
         return [];
     }
