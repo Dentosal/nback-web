@@ -1,8 +1,20 @@
-// Normalize settings over app versions
+// Normalize/fix settings over app versions
 const normalizeSettings = settings => {
     settings.audio.set = settings.audio.set || 'fi_automatic';
     settings.color.set = settings.color.set || 'high_contrast';
-    settings.actionBias = settings.actionBias === undefined ? 0.1 : settings.actionBias;
+
+    // Patch for old settings where bias was not set, but we accidentally overwrote it to 0.1.
+    // endMoment was introduced in the same version, so it's missing iff actionBias should be missing
+    // To avoid permantly destroying data if this reasoning is wrong, we save it to backup__actionBias as well.
+    if (settings.endMoment === undefined) {
+        if (backup__actionBias === undefined) {
+            settings.backup__actionBias = settings.actionBias;
+        }
+        settings.actionBias = 0.0;
+    } else if (settings.actionBias === undefined) {
+        settings.actionBias = 0.1;
+    }
+
     return settings;
 };
 
