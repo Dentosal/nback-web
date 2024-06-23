@@ -22,7 +22,7 @@ const fetchLatestVersion = async () => {
 };
 
 let update_throttle = 1000 * 60; // At most once per minute
-let update_last = performance.now();
+let update_last = -update_throttle; // So this runs once on startup
 
 const checkForUpdates = async () => {    
     let elem = document.querySelector("#update");
