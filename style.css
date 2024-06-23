@@ -158,6 +158,8 @@ input:invalid, label:has(:invalid) {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 #responses > div {
