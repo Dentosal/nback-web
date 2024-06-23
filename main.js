@@ -2,7 +2,7 @@
 const normalizeSettings = settings => {
     settings.audio.set = settings.audio.set || 'fi_automatic';
     settings.color.set = settings.color.set || 'high_contrast';
-    return settings
+    return settings;
 }
 
 const patchHistorySettings = entry => {
@@ -276,11 +276,10 @@ const endGame = () => {
 }
 
 const readRunHistory = () => {
-    try {
-        return JSON.parse(localStorage.getItem('history') || '[]').map(patchHistorySettings).map(normalizeSettings);
-    } catch {
-        return [];
-    }
+    return JSON.parse(localStorage.getItem('history') || '[]').map(patchHistorySettings).map(run => {
+        run.settings = normalizeSettings(run.settings);
+        return run;
+    });
 };
 
 const updateRunHistory = () => {
