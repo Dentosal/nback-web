@@ -1,0 +1,22 @@
+name: Publish pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  pages:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v1
+      - run: cp .git/refs/heads/master version.txt
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: .
+      - uses: actions/deploy-pages@v2
