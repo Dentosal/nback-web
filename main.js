@@ -7,7 +7,7 @@ const normalizeSettings = settings => {
     // endMoment was introduced in the same version, so it's missing iff actionBias should be missing
     // To avoid permantly destroying data if this reasoning is wrong, we save it to backup__actionBias as well.
     if (settings.endMoment === undefined) {
-        if (backup__actionBias === undefined) {
+        if (settings.backup__actionBias === undefined) {
             settings.backup__actionBias = settings.actionBias;
         }
         settings.actionBias = 0.0;
