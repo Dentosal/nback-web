@@ -59,6 +59,25 @@ dialog[open]::backdrop {
     }
 }
 
+#update {
+    width: 100%;
+    text-align: center;
+    background-color: lightblue;
+    border-radius: 3px;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+#update:empty {
+    display: none;
+}
+
+#update.error {
+    color: white;
+    background: red;
+    font-weight: bold;
+}
+
 #menucontent {
     display: flex;
     flex-direction: column;

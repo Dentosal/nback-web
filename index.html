@@ -8,12 +8,14 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="main.js"></script>
     <script src="stats.js"></script>
+    <script src="update.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body x-data>
     <dialog id="menu" @keydown="if ($event.key === 'Escape') $event.preventDefault();">
         <div id="menucontent">
+            <div id="update" @click="window.location.reload()"></div>
             <div>
                 <h2>Moni <i>n</i>-taa</h2>
                 <p>Työmuistia kehittävä harjoitus <a href="https://gwern.net/dnb-faq" target="_blank"><i>Gwern</i>in artikkelin suosituksilla.</a></p>

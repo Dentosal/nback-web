@@ -296,6 +296,7 @@ const closeThisModal = event => {
 const backToMenu = event => {
     closeThisModal(event);
     document.getElementById('menu').showModal();
+    checkForUpdates();
 }
 
 const sendResponse = category => {
