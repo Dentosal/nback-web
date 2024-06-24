@@ -241,6 +241,11 @@ input:invalid, label:has(:invalid) {
             background: gray;
         }
     }
+
+    & h2, h3, h4 {
+        margin: 3px;
+    }
+
     & canvas {
         min-width: min(400px, 90svw);
         max-width: 95svw;
@@ -262,10 +267,6 @@ input:invalid, label:has(:invalid) {
     justify-content: flex-start;
     align-items: center;
     max-width: 95%;
-
-    & h3 {
-        margin: 2px;
-    }
 }
 
 #history, #runstats, #insights {

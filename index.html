@@ -288,7 +288,7 @@
         </div>
 
         <div class="axes">
-            <h3>Näytä</h3>
+            <h3>Kuvaaja</h3>
             <template x-for="axis in ['x', 'y']">
                 <div>
                     <h4><span x-text="axis"></span>-akseli:</h4>
@@ -320,6 +320,16 @@
                     ></option>
                 </template>
             </select>
+            <div>
+                <h4>Ulkoasu</h4>
+                <label><input type="number"
+                    min="6"
+                    max="100"
+                    step="2"
+                    x-model.number="Chart.defaults.font.size"
+                    @change="Chart.getChart('chart').update()"
+                >Fonttikoko</label>
+            </div>
         </div>
 
         <div class="filters">
