@@ -1,6 +1,6 @@
 "use strict"; 
 
-let current_version = null;
+let current_version = "$MAGIC_VERSION_NUMBER";
 
 const isLocalDev = () => {
     return [
@@ -24,7 +24,7 @@ const fetchLatestVersion = async () => {
 };
 
 let update_throttle = 1000 * 60; // At most once per minute
-let update_last = -update_throttle; // So this runs once on startup
+let update_last = performance.now(); // So that we don't check immediately
 
 const checkForUpdates = async () => {    
     let elem = document.querySelector("#update");
