@@ -32,16 +32,16 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
+                        <li>Lisätty analyysinäkymä</li>
                         <li>Parannettu reaktiopainikkeita kosketusnäyttölaitteilla</li>
                         <li>Korjattu aktiivisuusvinouma-asetuksen vanhoja arvoja, jotka näkyivät väärinä historiassa</li>
                         <li>Lisätty automaattinen päivitysten tarkastus</li>
-                        <li>Korjattu multitouch-tuki ja ulkoasu mobiililaitteilla</li>
                     </ul>
                 </p>
             </div>
             <div class="mid">
                 <input type="button" value="Historia" @click="document.querySelector('#history').showModal()">
-                <input type="button" value="Analysoi" @click="document.querySelector('#insights').showModal()">
+                <input type="button" value="Analysoi (beta)" @click="document.querySelector('#insights').showModal()">
                 <!-- <input type="button" value="Jaa parhaat tulokset"> -->
             </div>
             <div class="mid large">
