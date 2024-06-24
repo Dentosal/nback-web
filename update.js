@@ -1,3 +1,5 @@
+"use strict"; 
+
 let current_version = null;
 
 const isLocalDev = () => {

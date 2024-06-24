@@ -1,3 +1,5 @@
+"use strict";
+
 // Normalize/fix settings over app versions
 const normalizeSettings = settings => {
     settings.audio.set = settings.audio.set || 'fi_automatic';
@@ -154,12 +156,12 @@ const stepCheckPrev = state => {
     if (state.currentRun.length !== 0) {
         let correct = checkCorrect();
         state.currentRun.at(-1).correct = correct;
-        for (k of Object.keys(correct)) {
+        for (let k of Object.keys(correct)) {
             document.querySelector("#responses ." + k).setAttribute('data-correct', correct[k]);
         }
     }
     setTimeout(() => {
-        for (r of document.querySelectorAll("#responses *[data-correct]")) {
+        for (let r of document.querySelectorAll("#responses *[data-correct]")) {
             r.removeAttribute('data-correct');
         }
     }, 400);
@@ -210,7 +212,7 @@ const stepPrimary = () => {
     state.currentRun.push(entry);
 
     // Activate relevant stimuli
-    for (cell of document.querySelectorAll('#gamegrid>div')) {
+    for (let cell of document.querySelectorAll('#gamegrid>div')) {
         cell.classList.remove('active');
     }
     let active = settings.position.enabled ? entry.position + 1 : 5;
@@ -227,7 +229,7 @@ const stepPrimary = () => {
 };
 
 const stepPost = () => {
-    for (cell of document.querySelectorAll('#gamegrid>div')) {
+    for (let cell of document.querySelectorAll('#gamegrid>div')) {
         cell.classList.remove('active');
     }
 };
@@ -251,14 +253,14 @@ const checkCorrect = () => {
     }
 
     if (state.currentRun.length <= settings.n) {
-        for (k of Object.keys(correct)) {
+        for (let k of Object.keys(correct)) {
             correct[k] = !(k in state.currentRun.at(-1).response);
         }
     } else {
         let lookback = state.currentRun.at(-(settings.n + 1));
         let current = state.currentRun.at(-1);
 
-        for (k of Object.keys(correct)) {
+        for (let k of Object.keys(correct)) {
             let resp = k in current.response;
             let actual = lookback[k] == current[k];
             correct[k] = resp === actual;
@@ -283,14 +285,14 @@ const readRunHistory = () => {
 };
 
 const updateRunHistory = () => {
-    currentRun = Alpine.store('state').currentRun;
+    let state = Alpine.store('state');
     let settings = Alpine.store('settings');
     localStorage.getItem('history');
     let history = readRunHistory();
     let newHistory = history.concat([{
         endMoment: (new Date()).toISOString(),
         settings,
-        run: currentRun,
+        run: state.currentRun,
     }]);
     localStorage.setItem('history', JSON.stringify(newHistory));
     Alpine.store('runHistory', newHistory);
@@ -342,6 +344,7 @@ document.addEventListener('alpine:init', () => {
         hasValidSettings: false,
         currentRun: [],
         selectedRun: null,
+        lang: 'fi',
     });
     setTimeout(updateSettings, 0);
     

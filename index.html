@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moni n-taa</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="localization.js"></script>
     <script src="main.js"></script>
+    <script src="util.js"></script>
     <script src="stats.js"></script>
     <script src="update.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -38,7 +41,7 @@
             </div>
             <div class="mid">
                 <input type="button" value="Historia" @click="document.querySelector('#history').showModal()">
-                <!-- <input type="button" value="Tilastot"> -->
+                <input type="button" value="Analysoi" @click="document.querySelector('#insights').showModal()">
                 <!-- <input type="button" value="Jaa parhaat tulokset"> -->
             </div>
             <div class="mid large">
@@ -229,8 +232,8 @@
             <input type="button" value="Takaisin" @click="backToMenu">
         </div>
         <div>
-            Pelattu yhteensä <span x-text="formatTime(totalTime($store.runHistory))"></span>, josta
-            <span x-text="formatTime(totalTimeToday($store.runHistory))"></span> tänään.
+            Pelattu yhteensä <span x-text="formatDuration(totalTime($store.runHistory))"></span>, josta
+            <span x-text="formatDuration(totalTimeToday($store.runHistory))"></span> tänään.
         </div>
         <table>
             <thead>
@@ -269,6 +272,129 @@
                 </template>
             </tbody>
         </table>
+    </dialog>
+
+    <dialog id="insights" x-data="{runFilters: structuredClone(runFilterDefaults), itemFilters: structuredClone(itemFilterDefaults), chartSettings: structuredClone(chartSettingsDefaults)}">
+        <div>
+            <h2>Analysoi</h2>
+            <input type="button" value="Takaisin" @click="backToMenu">
+        </div>
+
+        <div class="presets">
+            <h3>Kokeile näitä</h3>
+            <template x-for="preset in insightsPresets">
+                <input type="button" :value="preset.name" @click="({runFilters, itemFilters, chartSettings} = preset);">
+            </template>
+        </div>
+
+        <div class="axes">
+            <h3>Näytä</h3>
+            <template x-for="axis in ['x', 'y']">
+                <div>
+                    <h4><span x-text="axis"></span>-akseli:</h4>
+                    <select x-model="chartSettings[axis]" x-init="$nextTick(() => {$el.value = chartSettings[axis]} /* ouch */)">
+                        <optgroup label="Suoritus">
+                            <template x-for="v in axisChoices[axis].run">
+                                <option
+                                    :value="'run:' + v.name"
+                                    x-text="l10n.chartValues[$store.state.lang]['run:' + v.name]"
+                                ></option>
+                            </template>
+                        </optgroup>
+                        <optgroup label="Syöte">
+                            <template x-for="v in axisChoices[axis].trial">
+                                <option
+                                    :value="'trial:' + v.name"
+                                    x-text="l10n.chartValues[$store.state.lang]['trial:' + v.name]"
+                                ></option>
+                            </template>
+                        </optgroup>
+                    </select>
+                </div>
+            </template>
+            <select x-model="chartSettings.combine">
+                <template x-for="key of ['avg', 'med', 'minmax', 'combo', 'sum']" :key="key">
+                    <option
+                        :value="key"
+                        x-text="l10n.combineFn[$store.state.lang][key]"
+                    ></option>
+                </template>
+            </select>
+        </div>
+
+        <div class="filters">
+            <h3>Rajaa suorituksia</h3>
+            <div>
+                <input type="date" x-model="runFilters.date.min">
+                &le; päivä &le;
+                <input type="date" x-model="runFilters.date.max">
+                <input type="button" value="Tänään" @click="runFilters.date.min = runFilters.date.max = getToday();">
+                <input type="button" value="Kaikki" @click="runFilters.date = runFilterDefaults.date">
+            </div>
+            <div>
+                <select x-model.boolean="runFilters.kindExact">
+                    <option value="false">Ainakin</option>
+                    <option value="true">Tarkalleen</option>
+                </select>
+                <template x-for="key of ['position', 'audio', 'color', 'shape']">
+                    <label>
+                        <input type="checkbox" x-model.boolean="runFilters.kind[key]">
+                        <span x-text="l10n.stimulus[$store.state.lang][key]"></span>
+                    </label>
+                </template>
+            </div>
+            <div>
+                <input type="text" pattern="|[1-9][0-9]*" placeholder="-" x-model.number="runFilters.n.min">
+                &le; n &le;
+                <input type="text" pattern="|[1-9][0-9]*" placeholder="-" x-model.number="runFilters.n.max">
+                <input type="button" value="Kaikki" @click="runFilters.n = runFilterDefaults.n">
+            </div>
+            <div>
+                <input type="text" pattern="|[1-9][0-9]*" placeholder="-" x-model.number="runFilters.runLength.min">
+                &le; kpl &le;
+                <input type="text" pattern="|[1-9][0-9]*" placeholder="-" x-model.number="runFilters.runLength.max">
+                <input type="button" value="Kaikki" @click="runFilters.runLength = runFilterDefaults.runLength">
+            </div>
+            <div>
+                <input type="text" pattern="|[1-9][0-9]*" placeholder="-" x-model.number="runFilters.secondsPerTrial.min">
+                &le; aika &le;
+                <input type="text" pattern="|[1-9][0-9]*" placeholder="-" x-model.number="runFilters.secondsPerTrial.max">
+                <input type="button" value="Kaikki" @click="runFilters.secondsPerTrial = runFilterDefaults.secondsPerTrial">
+            </div>
+            <div>
+                <input type="number" min="0" max="1" step="0.05" x-model.number="runFilters.actionBias.min">
+                &le; vinouma &le;
+                <input type="number" min="0" max="1" step="0.05" x-model.number="runFilters.actionBias.max">
+                <input type="button" value="Kaikki" @click="runFilters.actionBias = runFilterDefaults.actionBias">
+            </div>
+        </div>
+
+        <div class="filters" x-show="!(chartSettings.x.startsWith('run:') && chartSettings.y.startsWith('run:'))">
+            <h3>Rajaa datapisteitä</h3>
+            <template x-for="[key, name] of [['position','Sijainti'],['audio','Ääni'],['color','Väri'],['shape','Muoto']]">
+                <div>
+                    <span x-text="name"></span>
+                    <select x-model="itemFilters.kind[key]">
+                        <option value="true">Mikä tahansa</option>
+                        <option value="false">Ohita aina</option>
+                        <option value="correct">Oikein</option>
+                        <option value="!correct">Väärin</option>
+                        <option value="action">Painettu</option>
+                        <option value="!action">Ei painettu</option>
+                        <option value="correct && action">Oikein ja painettu</option>
+                        <option value="!correct && action">Väärin ja painettu</option>
+                        <option value="correct && !action">Oikein ja ei painettu</option>
+                        <option value="!correct && !action">Väärin ja ei painettu</option>
+                    </select>
+                </div>
+            </template>
+            <div>
+                <input type="checkbox" x-model="itemFilters.ignoreFirstN"> Ohita ensimmäiset n kierrosta
+            </div>
+        </div>
+        
+        <div id="data-stats"></div>
+        <canvas id="chart" x-effect="updateAnalysis($store.runHistory, runFilters, itemFilters, chartSettings)"></canvas>
     </dialog>
 
     <div id="game">

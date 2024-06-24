@@ -30,12 +30,18 @@ span[data-tooltip]:hover:after {
     background: #eee;
 }
 
+dialog:not([open]) {
+    display: none !important;
+}
+
 dialog[open] {
     background-color: rgb(152, 205, 223);
     border: 2px solid black;
-    border-radius: 1rem;
-    padding: 1rem;
+    border-radius: 0.5rem;
     overscroll-behavior: contain;
+    max-width: 95svw;
+    max-height: 95svh;
+    box-sizing: border-box;
 }
     
 #menu[open] {
@@ -220,8 +226,51 @@ input:invalid, label:has(:invalid) {
     color: red;
 }
 
-#history, #runstats {
+#insights {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.5rem;
+
+    & > *:not(:first-child) {
+        background: lightblue;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+
+        &.filters.disabled {
+            background: gray;
+        }
+    }
+    & canvas {
+        min-width: min(400px, 90svw);
+        max-width: 95svw;
+        min-height: 200px;
+        max-height: 100svh;
+    }
+
+    #data-stats {
+        flex: 0 0 90svw;
+        text-align: center;
+    }
+}
+    
+#insights .presets {
+    flex: 0 0 100%;
+    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 95%;
+
+    & h3 {
+        margin: 2px;
+    }
+}
+
+#history, #runstats, #insights {
     & > div:first-child {
+        flex: 0 0 100%;
         display: flex;
         justify-content: space-between;
     }
