@@ -33,12 +33,13 @@ const isoToLocalDate = isoStr => {
 }
 
 // Mutating sort, magically guess type
+const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' })
 const magicSort = array => {
     if (array.length <= 1) {
         return;
     }
 
-    array.sort((a, b) => a - b);
+    array.sort(collator.compare);
 }
 
 // Convert value to number
