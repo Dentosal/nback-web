@@ -88,8 +88,11 @@ const columnScoreStr = (entry, column) => {
 }
 
 const formatDuration = seconds => {
+    if (seconds < 60) {
+        return seconds.toFixed(3) + "s";
+    }
     let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
+    let hours = Math.floor(seconds / 60);
     minutes = minutes % 60;
     seconds = seconds % 60;
     let result = "";
@@ -135,6 +138,7 @@ const axisConfig = {
     },
     seconds: {
         beginAtZero: true,
+        type: 'linear',
         ticks: {
             callback: function (value, index, ticks) {
                 return formatDuration(value);
