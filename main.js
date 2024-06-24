@@ -298,6 +298,14 @@ const updateRunHistory = () => {
     Alpine.store('runHistory', newHistory);
 };
 
+
+const downloadRunHistory = () => {
+    let runHistory = Alpine.store('runHistory');
+    let fDate = getLocalNowISO().replace(/[:]/g, '').replace(' ', '-');
+    downloadTextFile("history-" + fDate + ".json", JSON.stringify(runHistory), "application/json");
+};
+
+
 const closeThisModal = event => {
     let t = event.target;
     while (t.tagName !== 'DIALOG') {

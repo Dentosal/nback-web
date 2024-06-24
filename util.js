@@ -12,15 +12,18 @@ function maskedEval(scr, scope) {
     return (new Function("with(this) { return " + scr + "}")).call(mask);
 }
 
-// Returns current local date in iso format
-const getToday = () => {
+// Returns current local time truncated iso format
+const getLocalNowISO = () => {
     let t = new Date();
     let z = t.getTimezoneOffset() * 60 * 1000;
     let tLocal = t - z;
     tLocal = new Date(tLocal);
     let iso = tLocal.toISOString();
-    return iso.split("T")[0];
+    return iso.split(".")[0].replace("T", " ");
 }
+
+// Returns current local date in iso format
+const getToday = () => getLocalNowISO().split(" ")[0];
 
 // Converts iso date to local date
 const isoToLocalDate = isoStr => {
@@ -53,4 +56,16 @@ const toNumber = (value, hint) => {
     }
 
     return Number(value);
+}
+
+/// Start download of a file with given data
+function downloadTextFile(filename, text, mime = 'text/plain') {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:' + mime + ';charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 }

@@ -166,7 +166,7 @@ const axisChoices = {
             { name: "date", options: {}, chartType: 'line' },
             { name: "n", options: {}, chartType: 'bar' },
             { name: "kind", options: {}, chartType: 'bar' },
-            { name: "n_and_kind", options: {}, chartType: 'bar' },
+            { name: "n_AND_kind", options: {}, chartType: 'bar' },
             { name: "length", options: { beginAtZero: true }, chartType: 'line' },
             { name: "secondsPerTrial", options: axisConfig.seconds, chartType: 'line' },
             { name: "actionBias", options: { beginAtZero: true }, chartType: 'line' },
@@ -178,6 +178,7 @@ const axisChoices = {
             { name: "latency", options: axisConfig.latency, chartType: 'line' },
             { name: "latency_100", options: axisConfig.latency, chartType: 'line' },
             { name: "value", options: {}, chartType: 'bar' },
+            { name: "value_AND_correctness", options: {}, chartType: 'bar' },
         ],
     },
     y: {
@@ -272,9 +273,7 @@ const insightsPresets = [
 ];
 
 
-const updateAnalysis = (history, runFilters, itemFilters, axes) => {
-    let state = Alpine.store('state');
-
+const processData = (history, runFilters, itemFilters, axes) => {
     let filtered = history.filter(entry => {
         let settings = entry.settings;
 
@@ -306,6 +305,15 @@ const updateAnalysis = (history, runFilters, itemFilters, axes) => {
     let data = [];
     for (let run of filtered) {
         const resolveRun = name => {
+            let parts = name.split("_AND_");
+            if (parts.length > 1) {
+                parts = parts.map(resolveRun).filter(x => x !== undefined && x !== null).map(x => x.toString());
+                if (parts.length === 0) {
+                    return null;
+                }
+                return parts.reduce((acc, x) => acc + " " + x, "");
+            }
+
             if (name === "date") {
                 if (run.endMoment === undefined) {
                     return "unknown";
@@ -322,8 +330,6 @@ const updateAnalysis = (history, runFilters, itemFilters, axes) => {
                     + (run.settings.color.enabled ? "V" : "")
                     + (run.settings.shape.enabled ? "M" : "")
                 );
-            } else if (name === "n_and_kind") {
-                return resolveRun("n") + " " + resolveRun("kind");
             } else if (name === "length") {
                 return run.settings.runLength;
             } else if (name === "secondsPerTrial") {
@@ -368,6 +374,15 @@ const updateAnalysis = (history, runFilters, itemFilters, axes) => {
                 }
 
                 const resolveTrial = name => {
+                    let parts = name.split("_AND_");
+                    if (parts.length > 1) {
+                        parts = parts.map(resolveTrial).filter(x => x !== undefined && x !== null).map(x => x.toString());
+                        if (parts.length === 0) {
+                            return null;
+                        }
+                        return parts.reduce((acc, x) => acc + " " + x, "");
+                    }
+
                     if (name === "correctness") {
                         return trial.correct[st];
                     } else if (name === "resolution") {
@@ -393,11 +408,28 @@ const updateAnalysis = (history, runFilters, itemFilters, axes) => {
         }
     }
 
+    return data;
+}
+
+const updateAnalysis = (history, runFilters, itemFilters, axes) => {
+    let state = Alpine.store('state');
+
+    let [xScope, xName] = axes.x.split(":");
+    let [yScope, yName] = axes.y.split(":");
+
+    let data = processData(history, runFilters, itemFilters, axes);
+    
     const nodata = document.getElementById('data-stats');
     if (data.length === 0) {
         nodata.innerText = "Ei lainkaan dataa valittuna.";
-    } else {
-        nodata.innerText = "Valittuna " + data.length + " datapistettä.";
+        } else {
+        let dlSettings = JSON.stringify({ runFilters, itemFilters, axes });
+        nodata.innerText = "Valittuna " + data.length + " datapistettä. ";
+        let inputElem = document.createElement('input');
+        inputElem.setAttribute('type', 'button');
+        inputElem.setAttribute('onclick', 'downloadCurrentInsightData(' + dlSettings + ')');
+        inputElem.setAttribute('value', 'Lataa csv');
+        nodata.appendChild(inputElem);
     }
 
     const ctx = document.getElementById('chart');
@@ -521,3 +553,10 @@ const computeDataset = {
     min: data => unzipSortedMap(groupByX(data), arr => arr.length > 0 ? Math.min(...arr) : 0),
     max: data => unzipSortedMap(groupByX(data), arr => arr.length > 0 ? Math.max(...arr) : 0),
 }
+
+const downloadCurrentInsightData = ({ runFilters, itemFilters, axes }) => {
+    let runHistory = Alpine.store('runHistory');
+    let data = processData(runHistory, runFilters, itemFilters, axes);
+    let csv = "x,y\n" + data.map(({ x, y }) => x + "," + y).join("\n");
+    downloadTextFile("data.csv", csv);
+};

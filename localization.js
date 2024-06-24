@@ -30,7 +30,7 @@ const l10n = {
             'run:date': "päivä",
             'run:n': "n",
             'run:kind': "ärsykkeet",
-            'run:n_and_kind': "n ja ärsykkeet",
+            'run:n_AND_kind': "n ja ärsykkeet",
             'run:length': "kierroksia",
             'run:secondsPerTrial': "aikaraja",
             'run:actionBias': "vinouma",
@@ -41,6 +41,7 @@ const l10n = {
             'trial:latency': 'viive',
             'trial:latency_100': 'viive (~100ms)',
             'trial:value': 'aktivaatio',
+            'trial:value_AND_correctness': 'aktivaatio ja onnistuminen',
         },
     },
     resolution: {

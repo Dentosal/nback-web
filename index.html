@@ -32,7 +32,7 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
-                        <li>Lisätty analyysinäkymä</li>
+                        <li>Lisätty analyysinäkymä ja latauspainikkeet</li>
                         <li>Parannettu reaktiopainikkeita kosketusnäyttölaitteilla</li>
                         <li>Korjattu aktiivisuusvinouma-asetuksen vanhoja arvoja, jotka näkyivät väärinä historiassa</li>
                         <li>Lisätty automaattinen päivitysten tarkastus</li>
@@ -229,6 +229,7 @@
     <dialog id="history">
         <div>
             <h2>Historia</h2>
+            <input type="button" value="Lataa/Varmuuskopio (JSON)" @click="downloadRunHistory()">
             <input type="button" value="Takaisin" @click="backToMenu">
         </div>
         <div>
