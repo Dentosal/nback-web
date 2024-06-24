@@ -14,7 +14,7 @@ const fetchLatestVersion = async () => {
     try {
         let r = await fetch("version.txt");
         let version = await r.text();
-        return version;
+        return version.trim();
     } catch (e) {
         let elem = document.querySelector("#update");
         elem.classList.add("error");
