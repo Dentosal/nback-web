@@ -12,7 +12,7 @@ const isLocalDev = () => {
 
 const fetchLatestVersion = async () => {
     try {
-        let r = await fetch("version.txt");
+        let r = await fetch("version.txt?_=" + Date.now(), { cache: "no-store" });
         let version = await r.text();
         return version.trim();
     } catch (e) {
