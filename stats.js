@@ -92,7 +92,7 @@ const formatDuration = seconds => {
         return seconds.toFixed(3) + "s";
     }
     let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
     minutes = minutes % 60;
     seconds = seconds % 60;
     let result = "";
