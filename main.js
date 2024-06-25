@@ -1,9 +1,17 @@
 "use strict";
 
+const stimuliTypes = [
+    'position',
+    'audio',
+    'color',
+    'shape',
+];
+
 // Normalize/fix settings over app versions
 const normalizeSettings = settings => {
     settings.audio.set = settings.audio.set || 'fi_automatic';
     settings.color.set = settings.color.set || 'high_contrast';
+    settings.buttonOrder = settings.buttonOrder || structuredClone(stimuliTypes);
     return settings;
 }
 

@@ -32,10 +32,10 @@
                     <a href="https://github.com/Dentosal/nback-web/" target="_blank">Lähdekoodi on tarjolla GitHubissa.</a>
                     Viimeisimmät muutokset:
                     <ul>
+                        <li>Painikkeet voi nyt järjestää uudelleen</li>
                         <li>Lisätty analyysinäkymä ja latauspainikkeet</li>
                         <li>Parannettu reaktiopainikkeita kosketusnäyttölaitteilla</li>
                         <li>Korjattu aktiivisuusvinouma-asetuksen vanhoja arvoja, jotka näkyivät väärinä historiassa</li>
-                        <li>Lisätty automaattinen päivitysten tarkastus</li>
                     </ul>
                 </p>
             </div>
@@ -101,11 +101,23 @@
                 <!-- <label><input type="checkbox" x-model.boolean="$store.settings.shape.enabled">Muoto</label> -->
                 <input type="text" :value="$store.settings.shape.key" @keydown.prevent="$store.settings.shape.key=event.key" class="key"></span>
             </div>
+            <div>
+                Painikkeiden järjestys:
+                <select @change="$store.settings.buttonOrder = JSON.parse($el.value)">
+                    <template x-for="order in permute(stimuliTypes)">
+                        <option
+                            :value="JSON.stringify(order)"
+                            :selected="JSON.stringify(order) == JSON.stringify($store.settings.buttonOrder)"
+                            x-text="order.map(s => l10n.stimulus[$store.state.lang][s]).join(', ')"
+                        ></option>
+                    </template>
+                </select>
+            </div>
         </div>
     </dialog>
 
     <template x-if="$store.state.selectedRun !== null && $store.state.selectedRun < $store.runHistory.length">
-        <dialog id="runstats">
+        <dialog id="runstats" @keydown="if (document.getElementById('menu').getAttribute('open') === null && $event.key === 'Escape') $event.preventDefault();">
             <div>
                 <h2>Tulokset suoritukselle #<span x-text="$store.state.selectedRun + 1"></span></h2>
                 <input type="button" value="Takaisin" @click="backToMenu">
@@ -427,26 +439,15 @@
             <div></div>
         </div>
         <div id="responses">
-            <div class="position" x-show="$store.settings.position.enabled"
-                :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.position }"
-                @click="sendResponse('position')" @touchstart="sendResponse('position')">
-                Sijainti <span x-text="$store.settings.position.key"></span>
-            </div>
-            <div class="audio" x-show="$store.settings.audio.enabled"
-                :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.audio }"
-                @click="sendResponse('audio')" @touchstart="sendResponse('audio')">
-                Ääni <span x-text="$store.settings.audio.key"></span>
-            </div>
-            <div class="color" x-show="$store.settings.color.enabled"
-                :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.color }"
-                @click="sendResponse('color')" @touchstart="sendResponse('color')">
-                Väri <span x-text="$store.settings.color.key"></span>
-            </div>
-            <div class="shape" x-show="$store.settings.shape.enabled"
-                :class="{ pending: $store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response.shape }"
-                @click="sendResponse('shape')" @touchstart="sendResponse('shape')">
-                Muoto <span x-text="$store.settings.shape.key"></span>
-            </div>
+            <template x-for="button in $store.settings.buttonOrder">
+                <div class="rbutton" x-show="$store.settings[button].enabled"
+                    :class="button + ($store.state.currentRun.length > 0 && $store.state.currentRun.at(-1).response[button] ? ' pending' : '')"
+                    @click="sendResponse(button)" @touchstart="sendResponse(button)"
+                >
+                    <span x-text="l10n.stimulus[$store.state.lang][button]"></span>
+                    <span x-text="$store.settings[button].key"></span>
+                </div>
+            </template>
         </div>
     </div>
 </body>

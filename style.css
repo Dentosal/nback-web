@@ -168,7 +168,7 @@ input:invalid, label:has(:invalid) {
     touch-action: manipulation;
 }
 
-#responses > div {
+#responses div.rbutton {
     flex: 1;
     text-align: center;
     padding: 0.5rem;
@@ -179,17 +179,18 @@ input:invalid, label:has(:invalid) {
     display: grid;
     align-items: center;
 }
-#responses > div.pending {
-    background-color: skyblue;
+#responses div.rbutton.pending {
+    /* background-color: skyblue; */
+    background-color: yellow !important;
 }
 
-#responses span {
+#responses div.rbutton span:last-child {
     font-variant: small-caps;
     font-family: monospace;
     font-size: 3rem;
 }
 
-#responses div[data-correct=false] {
+#responses div.rbutton[data-correct=false] {
     background-color: lightcoral;
 }
 
