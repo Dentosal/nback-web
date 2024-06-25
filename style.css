@@ -180,8 +180,7 @@ input:invalid, label:has(:invalid) {
     align-items: center;
 }
 #responses div.rbutton.pending {
-    /* background-color: skyblue; */
-    background-color: yellow !important;
+    background-color: skyblue;
 }
 
 #responses div.rbutton span:last-child {
